@@ -66,6 +66,8 @@ ggarrange(timing_3pen+labs(title=""),mag_3pen+labs(title=""),nrow=2,ncol=1,label
 dev.off()
 
 
+
+
 ## Plots cp difficulty #####
 
 #Berkeley dataset Figure 5 Main paper

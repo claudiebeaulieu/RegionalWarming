@@ -1,10 +1,5 @@
 ##Plots
 
-library(ggplot2)
-library(oceanmap)
-library(viridis)
-library(oce)
-
 ##############Timing Plot######################### 
 timing_plots = function(results, lon, lat, dataname){
   #returns a map plot of cpts timings 
@@ -34,7 +29,8 @@ timing_plots = function(results, lon, lat, dataname){
          x = "Longitude",
          y = "Latitude", 
          fill = "Year") + 
-    coord_cartesian(xlim=c(-163,163),ylim=c(-55,55)) + 
+    # coord_cartesian(xlim=c(-163,163),ylim=c(-55,55)) + 
+    coord_cartesian(xlim=c(-163,163),ylim=c(-70.5,70.5)) + 
     scale_fill_viridis_c(na.value = "lightgrey")+
     theme(aspect.ratio = 1.0) +
     theme_linedraw() +
@@ -62,7 +58,7 @@ timing_combined_plots = function(results, lon, lat, dataname){
     plt = ggplot() + 
     geom_raster(data = cpts_df, aes(x = x, y = y, fill = layer)) + 
     landmass + 
-    coord_cartesian(xlim=c(-163,163),ylim=c(-55,55)) + 
+      coord_cartesian(xlim=c(-163,163),ylim=c(-70.5,70.5)) + 
     scale_fill_viridis_c(na.value = "lightgrey") +
     geom_point(data=na.omit(ag_df),aes(x = x, y = y, size = layer),na.rm=T,shape=21,fill="white",border="black",stroke=0.25) + 
     scale_size_discrete(range = c(0.5, 2)) +
@@ -117,7 +113,7 @@ mag_plots = function(results, lon, lat, dataname){
                          na.value="lightgrey") + 
     labs(title = dataname, x = "Longitude",
          y = "Latitude", fill = "°C/decade") + 
-    coord_cartesian(xlim=c(-163,163),ylim=c(-55,55)) +
+    coord_cartesian(xlim=c(-163,163),ylim=c(-70.5,70.5)) + 
     theme(aspect.ratio = 1.0) +
     theme_linedraw() +
     theme(panel.grid.major = element_blank(), 
@@ -151,7 +147,7 @@ mag_combined_plots = function(results, lon, lat, dataname){
                          space = "Lab", 
                          guide = "colorbar", 
                          na.value="lightgrey") + 
-    coord_cartesian(xlim=c(-163,163),ylim=c(-55,55)) + 
+    coord_cartesian(xlim=c(-163,163),ylim=c(-70.5,70.5)) + 
     geom_point(data=na.omit(ag_df),aes(x = x, y = y, size = layer),na.rm=T,shape=21,fill="black",border="black") +
     scale_size_discrete(range = c(0.5, 2)) +
     labs(title = dataname, x = "Longitude",
@@ -192,7 +188,7 @@ difficulty_plots = function(results,lon,lat,dataname){
                  color = "black",
                  linewidth=0.2) +
     coord_cartesian(xlim=c(-163,163),
-                    ylim=c(-55,55))+
+                    ylim=c(-70.5,70.5))+
     scale_fill_gradient(low = "white", 
                         high = "darkred",
                          limits = c(0,4.5),
@@ -246,7 +242,7 @@ quadtrend_plots = function(results,lon,lat,dataname){
     geom_polygon(data = map_data("world"),
                  aes(x = long, y = lat, group = group),
                  fill = NA, color = "black",linewidth=0.2) +
-    coord_cartesian(xlim=c(-163,163),ylim=c(-55,55))+
+    coord_cartesian(xlim=c(-163,163),ylim=c(-70.5,70.5))+
     scale_fill_gradient2(low = "darkblue", mid = "white", high = "darkred",
                          midpoint = 0,
                          limits = c(-0.001,0.002),
@@ -345,7 +341,7 @@ latitudinal_plots = function(lats,ncpts,dift,ycpts,plottype){
       geom_col(data = dfa_long,aes(x=lat,y=value,fill=variable)) +
       geom_col(data = dfd_long,aes(x=lat,y=-value,fill=variable)) +
       scale_y_continuous(expand = c(0,0),breaks=seq(-10,20,10),labels=c("10","0","10","20"),limits = c(-10,25)) +
-      scale_x_continuous(expand = c(0,0),limits=c(-60,60)) +
+      scale_x_continuous(expand = c(0,0),limits=c(-79,79)) +
       coord_flip() +
       geom_hline(yintercept = 0) +
       labs(y = "Changepoints detected (%)",
