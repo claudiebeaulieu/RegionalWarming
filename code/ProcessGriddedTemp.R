@@ -12,6 +12,7 @@ st.cpts=function(data,lon,lat,year,penalty){
   fittrendAR = array(data=NA,c(length(lon),length(lat),n))
   dift = array(data=NA,c(length(lon),length(lat)))
   difficulty = array(data=NA,c(length(lon),length(lat)))
+  NAs = array(data=0,c(length(lon),length(lat)))#0/1, 0 indicate too many NAs to analyze this grid
   results = list()
   
   if(penalty == "BIC"){
@@ -27,6 +28,7 @@ st.cpts=function(data,lon,lat,year,penalty){
       print(j)
       tmp = data[i,j,]#extract anomaly at a given grid cell
       if(sum(is.na(tmp)) == 0 && sum(tmp == tmp[1]) <5){#only analyze grid cells with no NA and with less than 10% of repeated values
+        NAs[i,j]=1
         cpt.trendARpJOIN = PELT.trendARpJOIN(tmp,p=1,pen=pen.value,minseglen=10)
         ncpts[i,j] = length(cpt.trendARpJOIN)
         fittrend_tmp = try({fit.trendARpJOIN(data=tmp,cpts=cpt.trendARpJOIN,p=1,dates=year,add.ar=F)},silent=T)# fit with no AR
@@ -44,8 +46,8 @@ st.cpts=function(data,lon,lat,year,penalty){
       }
     }
   }
-  results = list(ncpts, ycpts, fittrend, fittrendAR, dift, difficulty)
-  names(results)=c("ncpts","ycpts","fitttrend","fittrendAR","dift","difficulty")
+  results = list(ncpts, ycpts, fittrend, fittrendAR, dift, difficulty,NAs)
+  names(results)=c("ncpts","ycpts","fittrend","fittrendAR","dift","difficulty","NAs")
   return(results)
 }
 
