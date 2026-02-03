@@ -27,7 +27,8 @@ data/raw/
 # RStudio files
 .Rproj.user/
 
-
+# Temporary folder
+/temp/
 
 # R Environment Variables
 .Renviron
