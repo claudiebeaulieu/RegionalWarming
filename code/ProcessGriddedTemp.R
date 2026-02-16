@@ -61,20 +61,21 @@ st.quad=function(data,lon,lat,year){
   #initialise results arrays
   n = length(year)
   quadfit = array(data=NA,c(length(lon),length(lat),4))
-  results = list()
+  NAs = array(data=0,c(length(lon),length(lat)))#0/1, 0 indicate too many NAs to analyze this grid
   
   # loop through longitude and latitude
   for(i in 1:length(lon)){
     for(j in 1:length(lat)){
       tmp = data[i,j,]#extract anomaly at a given grid cell
       if(sum(is.na(tmp)) == 0 && sum(tmp == tmp[1]) <5){#only analyze grid cells with no NA and with less than 10% of repeated values
-        
+        NAs[i,j]=1
         quadmodel = try({summary(gls(tmp~year + I(year^2),correlation = corAR1(form = ~ 1),method="ML"))},silent=T)
         if(is.list(quadmodel)==T){
         quadfit[i,j,] = c(quadmodel$coefficients[2],quadmodel$coefficients[3],quadmodel$tTable[11],quadmodel$tTable[12])}
         }
       }
   }
-  results = quadfit
+  results = list(quadfit,NAs)
+  names(results)=c("quadfit","NAs")
   return(results)
   }

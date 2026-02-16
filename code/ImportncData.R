@@ -35,5 +35,10 @@ ImportncData = function(filepath,dataset,tas_varname,lon_varname,lat_varname,tim
     }
   }
   time = range_yr
+  
+  if (dataset == "NASA"){# We found a problem with data at lats 87-90, so replace with NAs
+    tas_annual[,87:90,] = NA
+  }
+  
   save(file=paste0("./data/processed/annual_", dataset, "_anom.RData"),tas_annual,lat,lon,time)
 }

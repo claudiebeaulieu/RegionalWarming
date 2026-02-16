@@ -15,11 +15,23 @@ load(file='./results/ResultsBerkeley.RData')
 timing_p1 = timing_plots(results,lon,lat,"Berkeley")
 mag_p1 = mag_plots(results,lon,lat,"Berkeley")
 
+#Berkeley regridded
+load('./data/processed/annual_Berkeley_anom_regridded.RData')
+load(file='./results/ResultsBerkeleyRegridded.RData')
+timing_p1r = timing_plots(results,lon,lat,"Berkeley")
+mag_p1r = mag_plots(results,lon,lat,"Berkeley")
+
 #NASA
 load('./data/processed/annual_NASA_anom.RData')
 load(file='./results/ResultsNASA.RData')
 timing_p2 = timing_plots(results,lon,lat,"NASA")
 mag_p2 = mag_plots(results,lon,lat,"NASA")
+
+#NASA
+load('./data/processed/annual_NASA_anom_regridded.RData')
+load(file='./results/ResultsNASARegridded.RData')
+timing_p2r = timing_plots(results,lon,lat,"NASA")
+mag_p2r = mag_plots(results,lon,lat,"NASA")
 
 # NOAA
 load('./data/processed/annual_NOAA_anom.RData')
@@ -45,15 +57,21 @@ load(file="./results/ResultsCombined.RData")
 timing_p6 = timing_combined_plots(combined_results,target_lon,target_lat,"Aggregated")
 mag_p6 = mag_combined_plots(combined_results,target_lon,target_lat,"Aggregated")
 
-#Plot with timings all datasets - main paper Figure 1
-pdf(file='./figures/trendcpt_all.pdf',width=8, height=10)
-ggarrange(timing_p6,timing_p1,timing_p2,timing_p3,timing_p4,timing_p5,nrow=3,ncol=2,labels=c("A","B","C","D","E","F"),align="v",common.legend = TRUE, legend = "top")
-dev.off()
+# Fig1 in paper 
+fig1 = ggarrange(timing_p6,timing_p1,timing_p2,timing_p3,timing_p4,timing_p5,nrow=3,ncol=2,labels=c("A","B","C","D","E","F"),align="v",common.legend = TRUE, legend = "top")
+ggsave('./figures/trendcpt_all.png', fig1, bg = "white",width=8, height=10) 
+
+# Alternative to fig 1 that shows results on regridded data
+fig1a = ggarrange(timing_p6,timing_p1r,timing_p2r,timing_p3,timing_p4,timing_p5,nrow=3,ncol=2,labels=c("A","B","C","D","E","F"),align="v",common.legend = TRUE, legend = "top")
+ggsave('./figures/trendcpt_all_alt.png', fig1a, bg = "white",width=8, height=10) 
 
 #Plot with magnitudes all datasets - main paper Figure 2
-pdf(file='./figures/trendmag_all.pdf',width=8, height=10)
-ggarrange(mag_p6,mag_p1,mag_p2,mag_p3,mag_p4,mag_p5,nrow=3,ncol=2,labels=c("A","B","C","D","E","F"),align="v",common.legend = TRUE, legend = "top")
-dev.off()
+fig2 = ggarrange(mag_p6,mag_p1,mag_p2,mag_p3,mag_p4,mag_p5,nrow=3,ncol=2,labels=c("A","B","C","D","E","F"),align="v",common.legend = TRUE, legend = "top")
+ggsave('./figures/trendmag_all.png', fig2, bg = "white",width=8, height=10) 
+
+#Alternative to fig2 with regridded data
+fig2a = ggarrange(mag_p6,mag_p1r,mag_p2r,mag_p3,mag_p4,mag_p5,nrow=3,ncol=2,labels=c("A","B","C","D","E","F"),align="v",common.legend = TRUE, legend = "top")
+ggsave('./figures/trendmag_all_alt.png', fig2a, bg = "white",width=8, height=10) 
 
 #Plot the timing and magnitude for Berkeley with reduced penalty - Figure S2 Supp
 load('./data/processed/annual_Berkeley_anom.RData')
@@ -61,9 +79,8 @@ load(file='./results/ResultsBerkeley_3Pen.RData')
 timing_3pen = timing_plots(results,lon,lat,"Berkeley")
 mag_3pen = mag_plots(results,lon,lat,"Berkeley")
 
-pdf(file='./figures/trendcpt_Berkeley_3Pen.pdf',width=8, height=8)
-ggarrange(timing_3pen+labs(title=""),mag_3pen+labs(title=""),nrow=2,ncol=1,labels=c("A","B"),align="v")
-dev.off()
+figs2 = ggarrange(timing_3pen+labs(title=""),mag_3pen+labs(title=""),nrow=2,ncol=1,labels=c("A","B"),align="v")
+ggsave('./figures/trendcpt_Berkeley_3Pen.png', figs2, bg = "white",width=8, height=10) 
 
 
 ## Plots cp difficulty #####
@@ -71,20 +88,17 @@ dev.off()
 #Berkeley dataset Figure 5 Main paper
 load('./data/processed/annual_Berkeley_anom.RData')
 load(file='./results/ResultsBerkeley.RData')
-diff_p1 = difficulty_plots(results,lon,lat,"Berkeley")
-pdf(file='./figures/difficulty_Berkeley.pdf',width=8, height=4) 
-diff_p1 + labs(title=" ")
-dev.off()
+diff_p1 = difficulty_plots(results,lon,lat,"Berkeley") + labs(title=" ")
+ggsave('./figures/difficulty_Berkeley.png', diff_p1, bg = "white",width=8, height=4) 
+
 
 ## PLots quadratic trends #####
 
 #Berkeley dataset Figure S4 Supp
 load('./data/processed/annual_Berkeley_anom.RData')
 load(file='./results/ResultsquadBerkeley.RData')
-quad_p1 = quadtrend_plots(results,lon,lat,"Berkeley")
-pdf(file='./figures/quadtrends_Berkeley.pdf',width=8, height=4) 
-quad_p1 + labs(title=" ")
-dev.off()
+quad_p1 = quadtrend_plots(results,lon,lat,"Berkeley") + labs(title=" ")
+ggsave('./figures/quadtrends_Berkeley.png', quad_p1, bg = "white",width=8, height=4) 
 
 
 ## Plots of changepoints per latitude #####
@@ -116,34 +130,37 @@ load('./results/ResultsRegionalAverages.RData')
 box_coords = matrix(c(-100, -90, 16, 21, 
                       -90, -78, 21, 30, 
                       -68,-56,-21,-10,
+                      -32,-18,68,80,
                       15,38,28,45,
                       100,120,26,35,
                       165,178,-45,-28,
                       160,180,35,45,
                       -180,-168,35,45), nrow=9, byrow = T)#contains the limits for boxes in regions above
-box_names = c("Southeast Mexico","Gulf of Mexico","Bolivia",
+box_names = c("Southeast Mexico","Gulf of Mexico","Bolivia", "East Greenland",
               "East Mediterranean","Southeast China","New Zealand",
               "North Pacific 1","North Pacific 2", "North Pacific")
 nregion = length(box_names)
 
 # plot of Berkeley cp timings plus white boxes around regions of interest
 timing_p1_boxes = timing_p1 + 
-  geom_rect(aes(xmin=box_coords[1,1],xmax=box_coords[1,2],ymin=box_coords[1,3],ymax=box_coords[1,4]),color="white",alpha=0,linewidth=1)+#Mexico
-  geom_rect(aes(xmin=box_coords[2,1],xmax=box_coords[2,2],ymin=box_coords[2,3],ymax=box_coords[2,4]),color="white",alpha=0,linewidth=1)+#Gulf of Mexico
-  geom_rect(aes(xmin=box_coords[3,1],xmax=box_coords[3,2],ymin=box_coords[3,3],ymax=box_coords[3,4]),color="white",alpha=0,linewidth=1)+#Bolivia
-  geom_rect(aes(xmin=box_coords[4,1],xmax=box_coords[4,2],ymin=box_coords[4,3],ymax=box_coords[4,4]),color="white",alpha=0,linewidth=1)+#Eastern mediterranean
-  geom_rect(aes(xmin=box_coords[5,1],xmax=box_coords[5,2],ymin=box_coords[5,3],ymax=box_coords[5,4]),color="white",alpha=0,linewidth=1)+#Southeast China
-  geom_rect(aes(xmin=box_coords[6,1],xmax=box_coords[6,2],ymin=box_coords[6,3],ymax=box_coords[6,4]),color="white",alpha=0,linewidth=1)+#SNew Zealand
-  geom_rect(aes(xmin=box_coords[7,1],xmax=box_coords[7,2],ymin=box_coords[7,3],ymax=box_coords[7,4]),color="white",alpha=0,linewidth=1)+#NP1
-  geom_rect(aes(xmin=box_coords[8,1],xmax=box_coords[8,2],ymin=box_coords[8,3],ymax=box_coords[8,4]),color="white",alpha=0,linewidth=1)+#NP2
-  geom_text(aes(x=-110,y=20),label="B",color="white")+
-  geom_text(aes(x=-68,y=30),label="C",color="white")+
-  geom_text(aes(x=-45,y=-10),label="D",color="white")+
-  geom_text(aes(x=45,y=30),label="E",color="white")+
-  geom_text(aes(x=90,y=35),label="F",color="white")+
-  geom_text(aes(x=160,y=-25),label="G",color="white")+
-  geom_text(aes(x=170,y=48),label="H",color="white")+
-  geom_text(aes(x=-170,y=48),label="H",color="white") + 
+  geom_rect(aes(xmin=box_coords[1,1],xmax=box_coords[1,2],ymin=box_coords[1,3],ymax=box_coords[1,4]),color="firebrick",alpha=0,linewidth=1)+#Mexico
+  geom_rect(aes(xmin=box_coords[2,1],xmax=box_coords[2,2],ymin=box_coords[2,3],ymax=box_coords[2,4]),color="firebrick",alpha=0,linewidth=1)+#Gulf of Mexico
+  geom_rect(aes(xmin=box_coords[3,1],xmax=box_coords[3,2],ymin=box_coords[3,3],ymax=box_coords[3,4]),color="firebrick",alpha=0,linewidth=1)+#Bolivia
+  geom_rect(aes(xmin=box_coords[4,1],xmax=box_coords[4,2],ymin=box_coords[4,3],ymax=box_coords[4,4]),color="firebrick",alpha=0,linewidth=1)+#Eastern Greenland
+  geom_rect(aes(xmin=box_coords[5,1],xmax=box_coords[5,2],ymin=box_coords[5,3],ymax=box_coords[5,4]),color="firebrick",alpha=0,linewidth=1)+#Eastern mediterranean
+  geom_rect(aes(xmin=box_coords[6,1],xmax=box_coords[6,2],ymin=box_coords[6,3],ymax=box_coords[6,4]),color="firebrick",alpha=0,linewidth=1)+#Southeast China 
+  geom_rect(aes(xmin=box_coords[7,1],xmax=box_coords[7,2],ymin=box_coords[7,3],ymax=box_coords[7,4]),color="firebrick",alpha=0,linewidth=1)+#SNew Zealand
+  geom_rect(aes(xmin=box_coords[8,1],xmax=box_coords[8,2],ymin=box_coords[8,3],ymax=box_coords[8,4]),color="firebrick",alpha=0,linewidth=1)+#NP1
+  geom_rect(aes(xmin=box_coords[9,1],xmax=box_coords[9,2],ymin=box_coords[9,3],ymax=box_coords[9,4]),color="firebrick",alpha=0,linewidth=1)+#NP2
+  geom_text(aes(x=-108,y=20),label="B",color="firebrick")+
+  geom_text(aes(x=-70,y=30),label="C",color="firebrick")+
+  geom_text(aes(x=-48,y=-10),label="D",color="firebrick")+
+  geom_text(aes(x=-38,y=72),label="E",color="firebrick")+
+  geom_text(aes(x=45,y=26),label="F",color="firebrick")+
+  geom_text(aes(x=93,y=36),label="G",color="firebrick")+
+  geom_text(aes(x=160,y=-25),label="H",color="firebrick")+
+  geom_text(aes(x=168,y=49),label="I",color="firebrick")+
+  geom_text(aes(x=-170,y=49),label="I",color="firebrick") + 
   labs(title=" ")
 
 box_p = list()
@@ -157,12 +174,11 @@ for (i in 1:(nregion)){
   box_p[[i]]=p
 }
 
-pdf(file='./figures/regional_averages_Berkeley.pdf',width=8, height=8) 
-ggarrange(timing_p1_boxes,                                                 # First row with map
-          ggarrange(box_p[[1]], box_p[[2]], box_p[[3]],box_p[[4]],box_p[[5]], box_p[[6]], box_p[[9]],ncol = 4, nrow=2,labels = c("B", "C","D","E","F","G","H","I")), # following rows with time series
+fig4 = ggarrange(timing_p1_boxes,                                                 # First row with map
+          ggarrange(box_p[[1]], box_p[[2]], box_p[[3]],box_p[[4]],box_p[[5]], box_p[[6]], box_p[[7]], box_p[[10]],ncol = 4, nrow=2,labels = c("B", "C","D","E","F","G","H","I")), # following rows with time series
           nrow = 2, 
           labels = "A")                                        
-dev.off()
+ggsave(file='./figures/regional_averages_Berkeley.png',fig4,bg = "white",width=8, height=8) 
 
 ## Plots global mean time series and fitted models #####
 

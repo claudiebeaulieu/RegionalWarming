@@ -78,15 +78,16 @@ save(file='./results/ResultsNASARegridded.RData',results)
 
 
 ## Combine results from all datasets in coarse resolution #####
-names=c("HadCRUT","NOAA","DCENT","BerkeleyRegridded","NASARegridded")
+names=c("NOAA","DCENT","HadCRUT","BerkeleyRegridded","NASARegridded")
 ycpts_array = array(data=NA,dim=c(72,36,5))
 dift_array = array(data=NA,dim=c(72,36,5))
+load('./data/processed/annual_DCENT_anom.RData')#this is to have the longitude for NOAA and DCENT to be shifted
 for(k in 1:5){
   load(paste0("./results/Results",names[k],".RData"))
   ycpts_array[,,k] = results$ycpts[,,1]
   dift_array[,,k] = results$dift
   
-  if(k == 5){
+  if(k <= 2){ #just changed it to 5
     ycpts_shifted = matrixShiftLongitude((results$ycpts[,,1]),lon)
     ycpts_array[,,k] = ycpts_shifted$m
     

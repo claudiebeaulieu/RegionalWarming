@@ -8,7 +8,7 @@
 # Script to load libraries and functions that will be used in this project.
 
 # load libraries #####
-
+library(datasets)
 library(ncdf4)
 library(terra)
 library(oce)
@@ -20,6 +20,7 @@ library(nlme)
 library(oceanmap)
 library(RColorBrewer)
 library(viridis)
+library(abind)
 
 
 # load functions #####

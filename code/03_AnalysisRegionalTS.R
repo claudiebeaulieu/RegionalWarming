@@ -19,24 +19,25 @@ load(file='./results/ResultsBerkeley.RData')
 box_coords = matrix(c(-100, -90, 16, 21, 
                       -90, -78, 21, 30, 
                       -68,-56,-21,-10,
+                      -32,-18,68,80,
                       15,38,28,45,
                       100,120,26,35,
                       165,178,-45,-28,
                       160,180,35,45,
                       -180,-168,35,45), nrow=9, byrow = T)#contains the limits for boxes in regions above
-box_names = c("Southeast Mexico","Gulf of Mexico","Bolivia",
+box_names = c("Southeast Mexico","Gulf of Mexico","Bolivia", "East Greenland",
               "East Mediterranean","Southeast China","New Zealand",
               "North Pacific 1","North Pacific 2", "North Pacific")
 
-nregion = 9
+nregion = length(box_names)
 year = seq(1970,2024)
 n=length(year)
 box_ts = list()
 
 for (i in 1:nregion){
   
-  if(i == 9){# need to merge boxes 7-8 and then average
-    box1 = tas_annual[(lon > box_coords[7,1]) & (lon < box_coords[7,2]),(lat > box_coords[7,3]) & (lat < box_coords[7,4]),121:175]
+  if(i == 10){# need to merge boxes 8-9 and then average
+    box1 = tas_annual[(lon > box_coords[9,1]) & (lon < box_coords[9,2]),(lat > box_coords[9,3]) & (lat < box_coords[9,4]),121:175]
     box2 = tas_annual[(lon > box_coords[8,1]) & (lon < box_coords[8,2]),(lat > box_coords[8,3]) & (lat < box_coords[8,4]),121:175]
     box = abind(box1,box2,along=1)
     mbox = apply(box, 3, mean, na.rm=T) 

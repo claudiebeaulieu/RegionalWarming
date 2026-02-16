@@ -3,55 +3,61 @@
 #Define lat and lon cutoffs for plotting maps
 latcutoff = c(-90,90)
 #latcutoff = c(-70.5,70.5) #for -80-80 
-longcutoff = c(-163,163)
+longcutoff = c(-180,180)
+
+landmass = geom_polygon(data = map_data("world", wrap=c(-180,180)),
+                        aes(x = long, y = lat, group = group),
+                        fill = NA, color = "black",linewidth=0.2)
 
 ##############Timing Plot######################### 
 timing_plots = function(results, lon, lat, dataname){
   #returns a map plot of cpts timings 
-  landmass = geom_polygon(data = map_data("world", wrap=c(-180,180)),
-                         aes(x = long, y = lat, group = group),
-                         fill = NA, color = "black",linewidth=0.2)
   
   if(max(lon) < 180){# longitude is -180-180
     
     cpts_raster = matrix2raster((results$ycpts[,,1]),x=lon,y=lat,layer=2)
     cpts_df = as.data.frame(cpts_raster,xy=T)
     
-  }else{#longitude is 0-360, we need to shift it
-    # this dataset has 0-360 longitude, so we need to reorganize into -180-180
+    NA_raster = matrix2raster((results$NAs),x=lon,y=lat,layer=2)
+    NA_df = as.data.frame(NA_raster,xy=T)
+    NA_df[NA_df == 0] = NA # zeros indicate missing values so we replace those with NA symbols
+      
+      
+  }else{#longitude is 0-360, we need to shift it to -180-180
     diff_shifted = matrixShiftLongitude((results$ycpts[,,1]),lon)
-    
     cpts_raster = matrix2raster(diff_shifted$m,
                                x=diff_shifted$longitude,
                                y=lat,layer=2)
     cpts_df = as.data.frame(cpts_raster,xy=T)
+    
+    NA_shifted = matrixShiftLongitude(results$NAs,lon)
+    NA_raster = matrix2raster(NA_shifted$m,
+                                x=NA_shifted$longitude,
+                                y=lat,layer=2)
+    NA_df = as.data.frame(NA_raster,xy=T)
+    NA_df[NA_df == 0] = NA 
   }
   
   plt = ggplot() + 
-    geom_raster(data = cpts_df, aes(x = x, y = y, fill = layer)) + 
+    geom_tile(data = cpts_df, aes(x = x, y = y, fill = layer)) + 
     landmass + 
     labs(title = dataname,
          x = "Longitude",
          y = "Latitude", 
          fill = "Year") + 
-    # coord_cartesian(xlim=c(-163,163),ylim=c(-55,55)) + 
-    coord_cartesian(xlim=longcutoff,ylim=latcutoff) + 
-    scale_fill_viridis_c(na.value = "lightgrey")+
-    theme(aspect.ratio = 1.0) +
-    theme_linedraw() +
+    scale_fill_viridis_c(na.value = "white")+
+    geom_tile(data = subset(NA_df, is.na(layer)), 
+                aes(x = x, y = y), fill = "grey70", alpha = 0.6) +
+    coord_fixed(ratio = 1, xlim = longcutoff, ylim = latcutoff, expand = FALSE) +
+    theme_bw() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
-          panel.border= element_blank())
-    
+          panel.border= element_blank()) 
   return(plt)
 }
 
 
 timing_combined_plots = function(results, lon, lat, dataname){
-  
-  landmass = geom_polygon(data = map_data("world", wrap=c(-180,180)),
-                           aes(x = long, y = lat, group = group),
-                           fill = NA, color = "black",linewidth=0.2)
     
     cpts_raster = matrix2raster(results$ycpts,x=lon,y=lat,layer=2)
     cpts_df = as.data.frame(cpts_raster,xy=T)
@@ -61,19 +67,20 @@ timing_combined_plots = function(results, lon, lat, dataname){
     ag_df$layer = as.factor(ag_df$layer)
   
     plt = ggplot() + 
-    geom_raster(data = cpts_df, aes(x = x, y = y, fill = layer)) + 
-    landmass + 
-      coord_cartesian(xlim=longcutoff,ylim=latcutoff) + 
-    scale_fill_viridis_c(na.value = "lightgrey") +
-    geom_point(data=na.omit(ag_df),aes(x = x, y = y, size = layer),na.rm=T,shape=21,fill="white",border="black",stroke=0.25) + 
+    geom_tile(data = cpts_df, aes(x = x, y = y, fill = layer)) + 
+    landmass +
+    scale_fill_viridis_c(na.value = "white") +
+    coord_fixed(ratio = 1, xlim = longcutoff, ylim = latcutoff, expand = FALSE) +
+    geom_point(data=na.omit(ag_df),
+               aes(x = x, y = y, size = layer),
+               shape=21,fill="white",color="black",stroke=0.25) + 
     scale_size_discrete(range = c(0.5, 2)) +
     labs(title = dataname,
            x = "Longitude",
            y = "Latitude", 
            fill = "Year",
            size = "Agreement") + 
-    theme(aspect.ratio = 1.0) +
-    theme_linedraw() +
+    theme_bw() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           panel.border= element_blank())
@@ -83,16 +90,16 @@ timing_combined_plots = function(results, lon, lat, dataname){
 
 ##############Magnitude Plot#############################
 mag_plots = function(results, lon, lat, dataname){
-  #returns a map plot of magnitude of cpts in results 
-  landmass = geom_polygon(data = map_data("world", wrap=c(-180,180)),
-                         aes(x = long, y = lat, group = group),
-                         fill = NA, color = "black",linewidth=0.2)
 
   if(max(lon) < 180){# longitude is -180-180
     
     results$dift[results$ncpts==0]=NA
     mag_raster = matrix2raster(results$dift*10,x=lon,y=lat,layer=2)
     mag_df = as.data.frame(mag_raster,xy=T)
+    
+    NA_raster = matrix2raster((results$NAs),x=lon,y=lat,layer=2)
+    NA_df = as.data.frame(NA_raster,xy=T)
+    NA_df[NA_df == 0] = NA # zeros indicate missing values so we replace those with NA symbols
     
   }else{#longitude is 0-360, we need to shift it
     # this dataset has 0-360 longitude, so we need to reorganize into -180-180
@@ -103,10 +110,17 @@ mag_plots = function(results, lon, lat, dataname){
                                x=diff_shifted$longitude,
                                y=lat,layer=2)
     mag_df = as.data.frame(mag_raster,xy=T)
+    
+    NA_shifted = matrixShiftLongitude(results$NAs,lon)
+    NA_raster = matrix2raster(NA_shifted$m,
+                              x=NA_shifted$longitude,
+                              y=lat,layer=2)
+    NA_df = as.data.frame(NA_raster,xy=T)
+    NA_df[NA_df == 0] = NA # zeros indicate missing values so we replace those with NA symbols
   }
 
   plt <- ggplot() + 
-    geom_raster(data = mag_df, aes(x = x, y = y, fill = layer)) + 
+    geom_tile(data = mag_df, aes(x = x, y = y, fill = layer)) + 
     landmass + 
     scale_fill_gradient2(low = "darkblue", mid = "white", high = "firebrick",
                          midpoint = 0,
@@ -115,12 +129,13 @@ mag_plots = function(results, lon, lat, dataname){
                          oob = scales::squish,
                          space = "Lab", 
                          guide = "colorbar", 
-                         na.value="lightgrey") + 
+                         na.value="white") + 
     labs(title = dataname, x = "Longitude",
          y = "Latitude", fill = "°C/decade") + 
-    coord_cartesian(xlim=longcutoff,ylim=latcutoff) + 
-    theme(aspect.ratio = 1.0) +
-    theme_linedraw() +
+    geom_tile(data = subset(NA_df, is.na(layer)), 
+                aes(x = x, y = y), fill = "grey70", alpha = 0.6) +
+    coord_fixed(ratio = 1, xlim = longcutoff, ylim = latcutoff, expand = FALSE) +
+    theme_bw() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           panel.border= element_blank())
@@ -129,10 +144,6 @@ mag_plots = function(results, lon, lat, dataname){
 }
 
 mag_combined_plots = function(results, lon, lat, dataname){
-
-  landmass = geom_polygon(data = map_data("world", wrap=c(-180,180)),
-                           aes(x = long, y = lat, group = group),
-                           fill = NA, color = "black",linewidth=0.2)
   
     mag_raster = matrix2raster(results$dift*10,x=lon,y=lat,layer=2)
     mag_df = as.data.frame(mag_raster,xy=T)
@@ -142,8 +153,8 @@ mag_combined_plots = function(results, lon, lat, dataname){
     ag_df$layer = as.factor(ag_df$layer)
     
   plt = ggplot() + 
-    geom_raster(data = mag_df, aes(x = x, y = y, fill = layer)) + 
-    landmass + 
+    geom_tile(data = mag_df, aes(x = x, y = y, fill = layer)) + 
+    landmass +
     scale_fill_gradient2(low = "darkblue", mid = "white", high = "firebrick",
                          midpoint = 0,
                          name = "°C/decade",
@@ -151,18 +162,16 @@ mag_combined_plots = function(results, lon, lat, dataname){
                          oob = scales::squish,
                          space = "Lab", 
                          guide = "colorbar", 
-                         na.value="lightgrey") + 
-    coord_cartesian(xlim=longcutoff,ylim=latcutoff) + 
-    geom_point(data=na.omit(ag_df),aes(x = x, y = y, size = layer),na.rm=T,shape=21,fill="black",border="black") +
+                         na.value="white") + 
+    coord_fixed(ratio = 1, xlim = longcutoff, ylim = latcutoff, expand = FALSE) +
+    geom_point(data=na.omit(ag_df),aes(x = x, y = y, size = layer),shape=21,fill="black",color="black") +
     scale_size_discrete(range = c(0.5, 2)) +
     labs(title = dataname, x = "Longitude",
          y = "Latitude", fill = "°C/decade",size="Agreement") + 
-    theme(aspect.ratio = 1.0) +
-    theme_linedraw() +
+    theme_bw() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           panel.border= element_blank())
-  
   return(plt)
 }
 
@@ -176,6 +185,10 @@ difficulty_plots = function(results,lon,lat,dataname){
     snr_raster = matrix2raster(results$difficulty,x=lon,y=lat,layer=2)
     snr_df = as.data.frame(snr_raster,xy=T)
     
+    NA_raster = matrix2raster((results$NAs),x=lon,y=lat,layer=2)
+    NA_df = as.data.frame(NA_raster,xy=T)
+    NA_df[NA_df == 0] = NA # zeros indicate missing values so we replace those with NA symbols
+    
   }else{
     diff_shifted = matrixShiftLongitude(results$difficulty,lon)
     
@@ -183,30 +196,35 @@ difficulty_plots = function(results,lon,lat,dataname){
                                x=diff_shifted$longitude,
                                y=lat,layer=2)
     snr_df = as.data.frame(snr_raster,xy=T)
+    
+    NA_shifted = matrixShiftLongitude(results$NAs,lon)
+    NA_raster = matrix2raster(NA_shifted$m,
+                              x=NA_shifted$longitude,
+                              y=lat,layer=2)
+    NA_df = as.data.frame(NA_raster,xy=T)
+    NA_df[NA_df == 0] = NA # zeros indicate missing values so we replace those with NA symbols
   }
   
   plt = ggplot() +
-    geom_raster(data = snr_df, aes(x = x, y = y, fill = layer)) +
-    geom_polygon(data = map_data("world"),
-                 aes(x = long, y = lat, group = group), 
-                 fill = NA, 
-                 color = "black",
-                 linewidth=0.2) +
-    coord_cartesian(xlim=longcutoff,
-                    ylim=latcutoff)+
+    geom_tile(data = snr_df, aes(x = x, y = y, fill = layer)) +
+    landmass +
     scale_fill_gradient(low = "white", 
                         high = "darkred",
                          limits = c(0,4.5),
                          guide = "colorbar",
-                         na.value="lightgrey")+
+                         na.value="white") +
+    coord_fixed(ratio = 1, xlim = longcutoff, ylim = latcutoff, expand = FALSE) +
+    geom_tile(data = subset(NA_df, is.na(layer)), 
+                aes(x = x, y = y), fill = "grey70", alpha = 0.6) +
     labs(title = dataname, 
          x = "Longitude",
          y = "Latitude",
          fill = "SNR")+
-    theme_linedraw() +
+    theme_bw() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           panel.border= element_blank())
+  
   
   return(plt)
 }
@@ -217,16 +235,20 @@ quadtrend_plots = function(results,lon,lat,dataname){
   
   if(max(lon) < 180){
   
-  quad_raster = matrix2raster(results[,,2],x=lon,y=lat,layer=2)
+  quad_raster = matrix2raster(results$quadfit[,,2],x=lon,y=lat,layer=2)
   quad_df = as.data.frame(quad_raster,xy=T)
   
-  pval_raster = matrix2raster(results[,,4],x=lon,y=lat,layer=2)
+  pval_raster = matrix2raster(results$quadfit[,,4],x=lon,y=lat,layer=2)
   pval_df = as.data.frame(pval_raster,xy=T)
   sig_df = subset(pval_df,layer > 0.05)
   
+  NA_raster = matrix2raster((results$NAs),x=lon,y=lat,layer=2)
+  NA_df = as.data.frame(NA_raster,xy=T)
+  NA_df[NA_df == 0] = NA # zeros indicate missing values so we replace those with NA symbols
+  
   }else{
-    mag2_shifted = matrixShiftLongitude(results[,,2],lon)
-    pval_shifted = matrixShiftLongitude(results[,,4],lon)
+    mag2_shifted = matrixShiftLongitude(results$quadfit[,,2],lon)
+    pval_shifted = matrixShiftLongitude(results$quadfit[,,4],lon)
     
     quad_raster = matrix2raster(mag2_shifted$m,
                                 x=mag2_shifted$longitude,
@@ -240,26 +262,33 @@ quadtrend_plots = function(results,lon,lat,dataname){
                                 layer=2)
     pval_df = as.data.frame(pval_raster,xy=T)
     sig_df = subset(pval_df,layer > 0.05)
+    
+    NA_shifted = matrixShiftLongitude(results$NAs,lon)
+    NA_raster = matrix2raster(NA_shifted$m,
+                              x=NA_shifted$longitude,
+                              y=lat,layer=2)
+    NA_df = as.data.frame(NA_raster,xy=T)
+    NA_df[NA_df == 0] = NA # zeros indicate missing values so we replace those with NA symbols
   }
   
   plt = ggplot() +
-    geom_raster(data = quad_df, aes(x = x, y = y, fill = layer)) +
-    geom_polygon(data = map_data("world"),
-                 aes(x = long, y = lat, group = group),
-                 fill = NA, color = "black",linewidth=0.2) +
-    coord_cartesian(xlim=longcutoff,ylim=latcutoff)+
+    geom_tile(data = quad_df, aes(x = x, y = y, fill = layer)) +
+    landmass +
     scale_fill_gradient2(low = "darkblue", mid = "white", high = "darkred",
                          midpoint = 0,
                          limits = c(-0.001,0.002),
                          space = "Lab",
                          guide = "colorbar",
-                         na.value="lightgrey")+
+                         na.value="white")+
+    coord_fixed(ratio = 1, xlim = longcutoff, ylim = latcutoff, expand = FALSE) +
+    geom_tile(data = subset(NA_df, is.na(layer)), 
+                aes(x = x, y = y), fill = "grey70", alpha = 0.6) +
     labs(title = dataname, x = "Longitude",
          y = "Latitude",fill = latex2exp::TeX('°C/decade$^2$'))+
     geom_point(data = sig_df, aes(x = x, y = y),
                alpha=0.2, size = 0.5, shape = 15)+
     guides(alpha="none")+
-    theme_linedraw() +
+    theme_bw() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           panel.border= element_blank())
