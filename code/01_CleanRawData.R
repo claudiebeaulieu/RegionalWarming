@@ -30,9 +30,22 @@ ImportncData(file_paths[i],dataset_name[i],Tas_varname[i],lon_varname[i],lat_var
 # For each dataset listed above, a file named annual_*dataset_name*_anom.RData containing annual anomalies has been created 
 # in /data/processed. Those are the intermediate datasets used in this study, not saved in the repository as they are too large.
 
+## Get the Berkeley dataset landmask
+
+# Open the file
+nc = nc_open("./data/raw/Land_and_Ocean_LatLong1.nc")
+
+# Extract the land mask (latitude x longitude matrix)
+land_mask = ncvar_get(nc, "land_mask")
+lat = ncvar_get(nc, "latitude")
+lon = ncvar_get(nc, "longitude")
+nc_close(nc)
+# Create a binary mask: 1 = land (>50% land fraction), 0 = ocean
+land_binary = ifelse(land_mask > 0.5, 1, 0)
+save(file='./data/processed/Berkeley_landmask.RData',land_mask,land_binary,lat,lon)
+
 
 ## Regridding the finer resolution datasets to coarse resolution #####
-
 
 # Regrid Berkeley and NASA to a 5x5 degree grid
 target_lat = seq(from=-87.5,by=5,to=87.5)

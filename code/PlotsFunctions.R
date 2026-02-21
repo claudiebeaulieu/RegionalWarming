@@ -369,13 +369,13 @@ latitudinal_plots = function(lats,ncpts,dift,ycpts,plottype){
       theme_linedraw() 
   }
   
-  if(plottype == 3){#we plot accelerations only and organize per decade
+  if(plottype == 3){#we plot accelerations/decelations and color per decade
     
     plt = ggplot() +
-      geom_col(data = dfa_long,aes(x=lat,y=value,fill=variable)) +
-      geom_col(data = dfd_long,aes(x=lat,y=-value,fill=variable)) +
-      scale_y_continuous(expand = c(0,0),breaks=seq(-10,20,10),labels=c("10","0","10","20"),limits = c(-10,25)) +
-      scale_x_continuous(expand = c(0,0),limits=c(-79,79)) +
+      geom_col(data = dfa_long,aes(x=lat,y=value,fill=variable),width=1) +
+      geom_col(data = dfd_long,aes(x=lat,y=-value,fill=variable),width=1) +
+      scale_y_continuous(expand = c(0,0),breaks=seq(-10,20,10),labels=c("10","0","10","20"),limits = c(-10,20)) +
+      scale_x_continuous(expand = c(0,0),limits=c(-89,89)) +
       coord_flip() +
       geom_hline(yintercept = 0) +
       labs(y = "Changepoints detected (%)",

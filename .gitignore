@@ -17,6 +17,7 @@ data/raw/
 
 #Output figures
 *.pdf
+*.png
 
 # Output files from R CMD build
 /*.tar.gz

@@ -107,16 +107,57 @@ ggsave('./figures/quadtrends_Berkeley.png', quad_p1, bg = "white",width=8, heigh
 load('./data/processed/annual_Berkeley_anom.RData')
 load('./results/ResultsBerkeley.RData')
 lat_p1 = latitudinal_plots(lat,results$ncpts,results$dift,results$ycpts[,,1],3) +
-  annotate("text", label = "Acceleration", x = 6, y = 6, size = 4, color = "lightpink2") +
-  annotate("text", label = "Deceleration", x = 6, y = -5, size = 4, color = "steelblue") +
+  annotate("text", label = "Acceleration", x = 6, y = 5, size = 3, color = "lightpink2") +
+  annotate("text", label = "Deceleration", x = 6, y = -5, size = 3, color = "steelblue") +
   geom_segment(aes(x = 0, y = 0, xend = 0, yend = -10),color="steelblue",
               arrow = arrow(length = unit(0.3, "cm")))+
   geom_segment(aes(x = 0, y = 0, xend = 0, yend = 10),color="lightpink2",
              arrow = arrow(length = unit(0.3, "cm")))
+ggsave(file='./figures/latitudes_Berkeley.png',lat_p1,bg = "white",width=4, height=4) 
 
-pdf(file='./figures/latitudes_Berkeley.pdf',width=4, height=4) 
-lat_p1
-dev.off()
+# Berkeley latitudinal changepoints - Land only
+load('./data/processed/annual_Berkeley_anom.RData')
+load('./data/processed/Berkeley_landmask.RData')#1 is land and 0 is ocean
+load('./results/ResultsBerkeley.RData')
+
+# Ocean
+ncpts = results$ncpts
+ncpts[land_binary == 1] = NA
+
+dift = results$dift
+dift[land_binary == 1] = NA
+
+ycpts = results$ycpts[,,1]
+ycpts[land_binary == 1] = NA
+
+latoce_p1 = latitudinal_plots(lat,ncpts,dift,ycpts,3) +
+  annotate("text", label = "Acceleration", x = 6, y = 5, size = 3, color = "lightpink2") +
+  annotate("text", label = "Deceleration", x = 6, y = -5, size = 3, color = "steelblue") +
+  geom_segment(aes(x = 0, y = 0, xend = 0, yend = -10),color="steelblue",
+               arrow = arrow(length = unit(0.3, "cm")))+
+  geom_segment(aes(x = 0, y = 0, xend = 0, yend = 10),color="lightpink2",
+               arrow = arrow(length = unit(0.3, "cm")))
+
+# Land
+ncpts = results$ncpts
+ncpts[land_binary == 0] = NA
+
+dift = results$dift
+dift[land_binary == 0] = NA
+
+ycpts = results$ycpts[,,1]
+ycpts[land_binary == 0] = NA
+
+latland_p1 = latitudinal_plots(lat,ncpts,dift,ycpts,3) +
+  annotate("text", label = "Acceleration", x = 6, y = 5, size = 3, color = "lightpink2") +
+  annotate("text", label = "Deceleration", x = 6, y = -5, size = 3, color = "steelblue") +
+  geom_segment(aes(x = 0, y = 0, xend = 0, yend = -10),color="steelblue",
+               arrow = arrow(length = unit(0.3, "cm")))+
+  geom_segment(aes(x = 0, y = 0, xend = 0, yend = 10),color="lightpink2",
+               arrow = arrow(length = unit(0.3, "cm")))
+
+lat_landoce = ggarrange(latland_p1,latoce_p1,nrow=1,ncol=2,labels=c("A","B"),align="v",common.legend = TRUE, legend = "bottom")
+ggsave(file='./figures/latitudes_landoce_Berkeley.png',lat_landoce,bg = "white",width=8, height=4) 
 
 
 ## Plots regional average time series #####
