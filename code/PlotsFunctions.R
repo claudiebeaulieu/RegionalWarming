@@ -73,7 +73,7 @@ timing_combined_plots = function(results, lon, lat, dataname){
     coord_fixed(ratio = 1, xlim = longcutoff, ylim = latcutoff, expand = FALSE) +
     geom_point(data=na.omit(ag_df),
                aes(x = x, y = y, size = layer),
-               shape=21,fill="white",color="black",stroke=0.25) + 
+               shape=21,fill="transparent",color="darkgrey",stroke=0.4) + 
     scale_size_discrete(range = c(0.5, 2)) +
     labs(title = dataname,
            x = "Longitude",
@@ -164,7 +164,7 @@ mag_combined_plots = function(results, lon, lat, dataname){
                          guide = "colorbar", 
                          na.value="white") + 
     coord_fixed(ratio = 1, xlim = longcutoff, ylim = latcutoff, expand = FALSE) +
-    geom_point(data=na.omit(ag_df),aes(x = x, y = y, size = layer),shape=21,fill="black",color="black") +
+    geom_point(data=na.omit(ag_df),aes(x = x, y = y, size = layer),shape=21,fill="transparent",color="black",stroke=0.3) +
     scale_size_discrete(range = c(0.5, 2)) +
     labs(title = dataname, x = "Longitude",
          y = "Latitude", fill = "°C/decade",size="Agreement") + 
@@ -208,11 +208,14 @@ difficulty_plots = function(results,lon,lat,dataname){
   plt = ggplot() +
     geom_tile(data = snr_df, aes(x = x, y = y, fill = layer)) +
     landmass +
-    scale_fill_gradient(low = "white", 
-                        high = "darkred",
-                         limits = c(0,4.5),
-                         guide = "colorbar",
-                         na.value="white") +
+    # #scale_fill_gradient(low = "yellow", 
+    #                     high = "darkred",
+    #                     trans = "log1p",
+    #                      limits = c(0,5),
+    #                      guide = "colorbar",
+    #                      na.value="white") +
+    scale_fill_gradientn(colors = c("#FFFFCC", "#FD8D3C", "#800026"),
+      trans = "log1p", limits = c(0, 5), na.value = "white")+
     coord_fixed(ratio = 1, xlim = longcutoff, ylim = latcutoff, expand = FALSE) +
     geom_tile(data = subset(NA_df, is.na(layer)), 
                 aes(x = x, y = y), fill = "grey70", alpha = 0.6) +
