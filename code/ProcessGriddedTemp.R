@@ -10,8 +10,8 @@ st.cpts=function(data,lon,lat,year,penalty){
   ycpts = array(data=NA,c(length(lon),length(lat),3))
   fittrend = array(data=NA,c(length(lon),length(lat),n))
   fittrendAR = array(data=NA,c(length(lon),length(lat),n))
-  dift = array(data=NA,c(length(lon),length(lat)))
-  difficulty = array(data=NA,c(length(lon),length(lat)))
+  dift = array(data=NA,c(length(lon),length(lat),3))
+  difficulty = array(data=NA,c(length(lon),length(lat),3))
   NAs = array(data=0,c(length(lon),length(lat)))#0/1, 0 indicate too many NAs to analyze this grid
   results = list()
   
@@ -37,12 +37,27 @@ st.cpts=function(data,lon,lat,year,penalty){
           fittrend[i,j,] = fittrend_tmp$fit}
         if(is.list(fittrendAR_tmp)==T){
           fittrendAR[i,j,] = fittrendAR_tmp$fit}
-        if(ncpts[i,j]>0){
+        if(ncpts[i,j] == 1){
+          ycpts[i,j,1] = year[cpt.trendARpJOIN]
+          cpt.difficulty = cpt_difficulty(tmp,cpt.trendARpJOIN, fittrend_tmp$coeffs)
+          difficulty[i,j,1:length(cpt.trendARpJOIN)] = cpt.difficulty[length(cpt.difficulty)]
+          dift[i,j,1] = cpt.difficulty[2]-cpt.difficulty[1]
+          }
+        if(ncpts[i,j] == 2){
+            ycpts[i,j,1:length(cpt.trendARpJOIN)] = year[cpt.trendARpJOIN]
+            cpt.difficulty = cpt_difficulty(tmp,cpt.trendARpJOIN, fittrend_tmp$coeffs)
+            difficulty[i,j,1:length(cpt.trendARpJOIN)] = cpt.difficulty[(length(cpt.difficulty)-1): length(cpt.difficulty)]
+            dift[i,j,1] = cpt.difficulty[2]-cpt.difficulty[1] 
+            dift[i,j,2] = cpt.difficulty[3]-cpt.difficulty[2] 
+        }
+        if(ncpts[i,j] == 3){
           ycpts[i,j,1:length(cpt.trendARpJOIN)] = year[cpt.trendARpJOIN]
           cpt.difficulty = cpt_difficulty(tmp,cpt.trendARpJOIN, fittrend_tmp$coeffs)
-          difficulty[i,j] = cpt.difficulty[length(cpt.difficulty)]
-          dift[i,j] = cpt.difficulty[2]-cpt.difficulty[1] 
-          }
+          difficulty[i,j,1:length(cpt.trendARpJOIN)] = cpt.difficulty[(length(cpt.difficulty)-2): length(cpt.difficulty)]
+          dift[i,j,1] = cpt.difficulty[2]-cpt.difficulty[1] 
+          dift[i,j,2] = cpt.difficulty[3]-cpt.difficulty[2] 
+          dift[i,j,3] = cpt.difficulty[4]-cpt.difficulty[3] 
+        }
       }
     }
   }

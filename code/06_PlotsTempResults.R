@@ -13,13 +13,13 @@
 load('./data/processed/annual_Berkeley_anom.RData')
 load(file='./results/ResultsBerkeley.RData')
 timing_p1 = timing_plots(results,lon,lat,"Berkeley")
-mag_p1 = mag_plots(results,lon,lat,"Berkeley")
+mag_p1 = mag_plots(results,lon,lat,"Berkeley") 
 
 #Berkeley regridded
 load('./data/processed/annual_Berkeley_anom_regridded.RData')
 load(file='./results/ResultsBerkeleyRegridded.RData')
-timing_p1r = timing_plots(results,lon,lat,"Berkeley")
-mag_p1r = mag_plots(results,lon,lat,"Berkeley")
+timing_p1r = timing_plots(results,lon,lat,"Berkeley regridded")
+mag_p1r = mag_plots(results,lon,lat,"Berkeley regridded")
 
 #NASA
 load('./data/processed/annual_NASA_anom.RData')
@@ -30,8 +30,8 @@ mag_p2 = mag_plots(results,lon,lat,"NASA")
 #NASA
 load('./data/processed/annual_NASA_anom_regridded.RData')
 load(file='./results/ResultsNASARegridded.RData')
-timing_p2r = timing_plots(results,lon,lat,"NASA")
-mag_p2r = mag_plots(results,lon,lat,"NASA")
+timing_p2r = timing_plots(results,lon,lat,"NASA regridded")
+mag_p2r = mag_plots(results,lon,lat,"NASA regridded")
 
 # NOAA
 load('./data/processed/annual_NOAA_anom.RData')
@@ -48,8 +48,8 @@ mag_p4 = mag_plots(results,lon,lat,"HadCRUT")
 #DCENT
 load('./data/processed/annual_DCENT_anom.RData')
 load(file='./results/ResultsDCENT.RData')
-timing_p5 = timing_plots(results,lon,lat,"DCENT")
-mag_p5 = mag_plots(results,lon,lat,"DCENT")
+timing_p5 = timing_plots(results,lon,lat,"DCENT-I")
+mag_p5 = mag_plots(results,lon,lat,"DCENT-I")
 
 #Combined datasets
 load('./data/processed/annual_Berkeley_anom_regridded.RData')
@@ -57,21 +57,13 @@ load(file="./results/ResultsCombined.RData")
 timing_p6 = timing_combined_plots(combined_results,target_lon,target_lat,"Aggregated")
 mag_p6 = mag_combined_plots(combined_results,target_lon,target_lat,"Aggregated")
 
-# Fig1 in paper 
-fig1 = ggarrange(timing_p6,timing_p1,timing_p2,timing_p3,timing_p4,timing_p5,nrow=3,ncol=2,labels=c("A","B","C","D","E","F"),align="v",common.legend = TRUE, legend = "top")
+# Fig1 in paper - timings
+fig1 = ggarrange(timing_p6,timing_p3,timing_p4,timing_p5,timing_p2r,timing_p1r,timing_p2,timing_p1,nrow=4,ncol=2,labels=c("A","B","C","D","E","F","G","H"),align="v",common.legend = TRUE, legend = "top")
 ggsave('./figures/trendcpt_all.png', fig1, bg = "white",width=8, height=10) 
 
-# Alternative to fig 1 that shows results on regridded data
-fig1a = ggarrange(timing_p6,timing_p1r,timing_p2r,timing_p3,timing_p4,timing_p5,nrow=3,ncol=2,labels=c("A","B","C","D","E","F"),align="v",common.legend = TRUE, legend = "top")
-ggsave('./figures/trendcpt_all_alt.png', fig1a, bg = "white",width=8, height=10) 
-
-#Plot with magnitudes all datasets - main paper Figure 2
-fig2 = ggarrange(mag_p6,mag_p1,mag_p2,mag_p3,mag_p4,mag_p5,nrow=3,ncol=2,labels=c("A","B","C","D","E","F"),align="v",common.legend = TRUE, legend = "top")
+# Fig2 in paper - magnitudes
+fig2 = ggarrange(mag_p6,mag_p3,mag_p4,mag_p5,mag_p2r,mag_p1r,mag_p2,mag_p1,nrow=4,ncol=2,labels=c("A","B","C","D","E","F","G","H"),align="v",common.legend = TRUE, legend = "top")
 ggsave('./figures/trendmag_all.png', fig2, bg = "white",width=8, height=10) 
-
-#Alternative to fig2 with regridded data
-fig2a = ggarrange(mag_p6,mag_p1r,mag_p2r,mag_p3,mag_p4,mag_p5,nrow=3,ncol=2,labels=c("A","B","C","D","E","F"),align="v",common.legend = TRUE, legend = "top")
-ggsave('./figures/trendmag_all_alt.png', fig2a, bg = "white",width=8, height=10) 
 
 #Plot the timing and magnitude for Berkeley with reduced penalty - Figure S2 Supp
 load('./data/processed/annual_Berkeley_anom.RData')
@@ -80,10 +72,10 @@ timing_3pen = timing_plots(results,lon,lat,"Berkeley")
 mag_3pen = mag_plots(results,lon,lat,"Berkeley")
 
 figs2 = ggarrange(timing_3pen+labs(title=""),mag_3pen+labs(title=""),nrow=2,ncol=1,labels=c("A","B"),align="v")
-ggsave('./figures/trendcpt_Berkeley_3Pen.png', figs2, bg = "white",width=8, height=10) 
+ggsave('./figures/trendcpt_Berkeley_3Pen.png', figs2, bg = "white",width=8, height=8) 
 
 
-## Plots cp difficulty #####
+## Plots cp SNR #####
 
 #Berkeley dataset Figure 5 Main paper
 load('./data/processed/annual_Berkeley_anom.RData')
@@ -103,19 +95,7 @@ ggsave('./figures/quadtrends_Berkeley.png', quad_p1, bg = "white",width=8, heigh
 
 ## Plots of changepoints per latitude #####
 
-# Berkeley latitudina changepoints - Figure 3 in Main
-load('./data/processed/annual_Berkeley_anom.RData')
-load('./results/ResultsBerkeley.RData')
-lat_p1 = latitudinal_plots(lat,results$ncpts,results$dift,results$ycpts[,,1],3) +
-  annotate("text", label = "Acceleration", x = 6, y = 5, size = 3, color = "lightpink2") +
-  annotate("text", label = "Deceleration", x = 6, y = -5, size = 3, color = "steelblue") +
-  geom_segment(aes(x = 0, y = 0, xend = 0, yend = -10),color="steelblue",
-              arrow = arrow(length = unit(0.3, "cm")))+
-  geom_segment(aes(x = 0, y = 0, xend = 0, yend = 10),color="lightpink2",
-             arrow = arrow(length = unit(0.3, "cm")))
-ggsave(file='./figures/latitudes_Berkeley.png',lat_p1,bg = "white",width=4, height=4) 
-
-# Berkeley latitudinal changepoints - Land only
+# Berkeley latitudinal changepoints - Land and ocean separated
 load('./data/processed/annual_Berkeley_anom.RData')
 load('./data/processed/Berkeley_landmask.RData')#1 is land and 0 is ocean
 load('./results/ResultsBerkeley.RData')
@@ -127,7 +107,7 @@ ncpts[land_binary == 1] = NA
 dift = results$dift
 dift[land_binary == 1] = NA
 
-ycpts = results$ycpts[,,1]
+ycpts = results$ycpts
 ycpts[land_binary == 1] = NA
 
 latoce_p1 = latitudinal_plots(lat,ncpts,dift,ycpts,3) +
@@ -145,7 +125,7 @@ ncpts[land_binary == 0] = NA
 dift = results$dift
 dift[land_binary == 0] = NA
 
-ycpts = results$ycpts[,,1]
+ycpts = results$ycpts
 ycpts[land_binary == 0] = NA
 
 latland_p1 = latitudinal_plots(lat,ncpts,dift,ycpts,3) +

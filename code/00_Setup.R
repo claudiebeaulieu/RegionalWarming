@@ -21,6 +21,7 @@ library(oceanmap)
 library(RColorBrewer)
 library(viridis)
 library(abind)
+library(ggnewscale)
 
 
 # load functions #####

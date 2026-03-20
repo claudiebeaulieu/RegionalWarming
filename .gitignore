@@ -11,6 +11,9 @@
 # User-specific files
 .Ruserdata
 
+# Temporary code
+Temporary.R
+
 # Raw data files
 *.nc
 data/raw/

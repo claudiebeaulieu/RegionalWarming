@@ -64,9 +64,6 @@ save(file='./results/ResultsDCENT.RData',results)
 results = st.quad(data,lon,lat,year)
 save(file='./results/ResultsquadDCENT.RData',results)
 
-## Analyze DCENT ensemble
-
-
 ## Analyze regridded datasets to a coarse resolution #####
 
 load('./data/processed/annual_Berkeley_anom_regridded.RData')
@@ -82,24 +79,34 @@ save(file='./results/ResultsNASARegridded.RData',results)
 
 ## Combine results from all datasets in coarse resolution #####
 names=c("NOAA","DCENT","HadCRUT","BerkeleyRegridded","NASARegridded")
-ycpts_array = array(data=NA,dim=c(72,36,5))
-dift_array = array(data=NA,dim=c(72,36,5))
+ycpts_array = array(data=NA,dim=c(72,36,10))
+dift_array = array(data=NA,dim=c(72,36,10))
+ncpts_array = array(data=NA,dim=c(72,36,5))
 load('./data/processed/annual_DCENT_anom.RData')#this is to have the longitude for NOAA and DCENT to be shifted
 for(k in 1:5){
   load(paste0("./results/Results",names[k],".RData"))
-  ycpts_array[,,k] = results$ycpts[,,1]
-  dift_array[,,k] = results$dift
+  ycpts_array[,,(k*2-1):(k*2)] = results$ycpts[,,1:2]
+  dift_array[,,(k*2-1):(k*2)] = results$dift[,,1:2]
+  ncpts_array[,,k] = results$ncpts
   
-  if(k <= 2){ #just changed it to 5
-    ycpts_shifted = matrixShiftLongitude((results$ycpts[,,1]),lon)
-    ycpts_array[,,k] = ycpts_shifted$m
+  if(k <= 2){ #datasets need to be shifted to lon -180-180
+    ycpt1_shifted = matrixShiftLongitude((results$ycpts[,,1]),lon)
+    ycpt2_shifted = matrixShiftLongitude((results$ycpts[,,2]),lon)
+    ycpts_array[,,(k*2-1)] = ycpt1_shifted$m
+    ycpts_array[,,(k*2)] = ycpt2_shifted$m
     
-    dift_shifted = matrixShiftLongitude(results$dift,lon)
-    dift_array[,,k] = dift_shifted$m
+    dift1_shifted = matrixShiftLongitude(results$dift[,,1],lon)
+    dift2_shifted = matrixShiftLongitude(results$dift[,,2],lon)
+    dift_array[,,(k*2-1)] = dift1_shifted$m
+    dift_array[,,(k*2)] = dift2_shifted$m
+    
+    ncpts_shifted = matrixShiftLongitude(results$ncpts,lon)
+    ncpts_array[,,k] = ncpts_shifted$m
   }
 }
-na_counts = apply(ycpts_array,1:2,function(x) sum(!is.na(x)))
+na_counts = apply(ncpts_array,1:2,function(x) sum(x>0,na.rm=T))
 na_counts[na_counts == 0] = NA
+
 my = apply(ycpts_array,1:2,mean,na.rm=T)
 mt = apply(dift_array,1:2,mean,na.rm=T)
 

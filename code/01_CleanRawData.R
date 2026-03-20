@@ -23,7 +23,6 @@ file_paths=c("./data/raw/gistemp1200_GHCNv4_ERSSTv5.nc",
              "./data/raw/air.mon.anom.nc",
              "./data/raw/Land_and_Ocean_LatLong1.nc",
              "./data/raw/DCENT_I_1.1.0.0_mean_spread_tas.nc")
-#             "./data/raw/DCENT_ensemble_1850_2024_ensemble_mean.nc")
 
 for(i in 1:5){
 ImportncData(file_paths[i],dataset_name[i],Tas_varname[i],lon_varname[i],lat_varname[i],time_varname,start_year[i],end_year)
