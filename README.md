@@ -116,7 +116,7 @@ Space-time signatures of surface warming accelerations since 1970,
 [https://doi.org/10.21203/rs.3.rs-7731926/v1]
 
 > Beaulieu, Johnson, Killick, Lanzante and Knutson. (2026). Code - Space-time 
-signatures of surface warming accelerations since 1970 (v1.1.1). Zenodo. 
+signatures of surface warming accelerations since 1970 (v1.1.0). Zenodo. 
 https://doi.org/10.5281/zenodo.17216578. 
 
 ---
