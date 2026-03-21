@@ -37,7 +37,7 @@ and quadratic trend fitting applied to gridded surface temperature datasets.
 | `abind` | 1.4-8 | Combining multi-dimensional arrays |
 | `ggnewscale` | 0.5.2 | Multiple color/fill scales in ggplot2 figures |
 
-> A full record of the R session is provided in `sessionInfo.txt`. For full reproducibility, a `renv.lock` file is also included — see **Installation** below.
+A full record of the R session is provided in `sessionInfo.txt`. 
 
 **Non-standard hardware:** None required. All scripts run on a standard desktop or laptop computer.
 
