@@ -110,7 +110,14 @@ This code is released under the [MIT / GPL-3.0] License — see `LICENSE` for de
 
 If you use this code, please cite:
 
-> Beaulieu, Johnson, Killick, Lanzante and Knutson. "Space-time signatures of surface warming accelerations since 1970." *Nature Communications* (under review).
+> Beaulieu, Johnson, Killick, Lanzante and Knutson.
+Space-time signatures of surface warming accelerations since 1970, 
+28 October 2025, PREPRINT (Version 1) available at Research Square 
+[https://doi.org/10.21203/rs.3.rs-7731926/v1]
+
+> Beaulieu, Johnson, Killick, Lanzante and Knutson. (2026). Code - Space-time 
+signatures of surface warming accelerations since 1970 (v1.1.0). Zenodo. 
+https://doi.org/10.5281/zenodo.19140812
 
 ---
 
