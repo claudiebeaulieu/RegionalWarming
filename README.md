@@ -68,7 +68,7 @@ Raw monthly gridded surface temperature files are not included in this repositor
 - [HadCRUT, https://www.metoffice.gov.uk/hadobs/hadcrut5/data/HadCRUT.5.0.2.0/download.html]
 - [DCENT-I, https://dcent-i.github.io/]
 
-Place raw data files in the `/data` folder before running the scripts. Global mean surface temperature time series should also be placed there.
+Place raw data files in the `/data/raw` folder before running the scripts. Global mean surface temperature time series should also be placed there.
 
 ---
 ## Usage
@@ -88,17 +88,14 @@ Scripts should be run in order from the `/code` folder:
 
 ---
 
----
-
 ## Repository Structure
 
 ```
 /code           # All R scripts (00–07)
-/data           # Raw input data (not included; see Data section above)
-/data/example   # Small example dataset for the demo
-/output         # Generated figures and results
+/data           # Raw input data and processed data (not included; see Data section above)
+/results         # Generated results files
+/figures        # Generated figures
 sessionInfo.txt # Full R session info for reproducibility
-renv.lock       # Package lockfile for renv
 ```
 
 ---
