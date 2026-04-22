@@ -162,6 +162,12 @@ box_names = c("Southeast Mexico","Gulf of Mexico","Bolivia", "East Greenland",
               "North Pacific 1","North Pacific 2", "North Pacific")
 nregion = length(box_names)
 
+# regional_averages = data.frame(box_ts[[1]]$year,box_ts[[1]]$mbox, box_ts[[2]]$mbox,box_ts[[3]]$mbox,box_ts[[4]]$mbox,box_ts[[5]]$mbox,
+#                                box_ts[[6]]$mbox,box_ts[[7]]$mbox,box_ts[[10]]$mbox)
+# names(regional_averages)= c("Year","Southeast Mexico","Gulf of Mexico","Bolivia", "East Greenland",
+#                             "East Mediterranean","Southeast China","New Zealand","North Pacific")
+# save(file="regional_averages.RData",regional_averages)
+
 # plot of Berkeley cp timings plus white boxes around regions of interest
 timing_p1_boxes = timing_p1 + 
   geom_rect(aes(xmin=box_coords[1,1],xmax=box_coords[1,2],ymin=box_coords[1,3],ymax=box_coords[1,4]),color="firebrick",alpha=0,linewidth=1)+#Mexico
