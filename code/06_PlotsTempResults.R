@@ -212,7 +212,7 @@ ggsave(file='./figures/regional_averages_Berkeley.png',fig4,bg = "white",width=8
 # This is figure S1 in Supp
 
 # load results + data
-load("./results/results_trendar1join_global.Rdata")
+load("./results/results_trendar1join_global_1850_2025.Rdata")
 
 # Initialise figure params
 cols = c("darkblue","orange","red","darkgrey","cyan")
@@ -227,10 +227,10 @@ names(fitsAR)=names
 dates = dates[-1]
 names(dates)=names
 
-fits_long = data.frame(unlist(dates),unlist(fits),c(rep("NASA",145),rep("HadCRUT",175),rep("NOAA",175),rep("Berkeley",175),rep("DCENT",175)))
+fits_long = data.frame(unlist(dates),unlist(fits),c(rep("NASA",146),rep("HadCRUT",176),rep("NOAA",176),rep("Berkeley",176),rep("DCENT",176)))
 names(fits_long) = c("year","value","dataset")
 
-fitsAR_long = data.frame(unlist(dates),unlist(fitsAR),c(rep("NASA",145),rep("HadCRUT",175),rep("NOAA",175),rep("Berkeley",175),rep("DCENT",175)))
+fitsAR_long = data.frame(unlist(dates),unlist(fitsAR),c(rep("NASA",146),rep("HadCRUT",176),rep("NOAA",176),rep("Berkeley",176),rep("DCENT",176)))
 names(fitsAR_long) = c("year","value","dataset")
 
 #plot the observations

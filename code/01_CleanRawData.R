@@ -63,38 +63,38 @@ save(file='./data/processed/annual_NASA_anom_regridded.RData',target_lat,target_
 
 ##### Gather the GMST from different institutions and create a dataframe.
 
-Tanom_annual_df = matrix(data=NA,nrow=175,ncol=6)
+Tanom_annual_df = matrix(data=NA,nrow=176,ncol=6)
 
 #HadCRUT
-data = read.csv("./data/raw/HadCRUT.5.0.2.0.analysis.summary_series.global.annual.csv")
+data = read.csv("./data/raw/HadCRUT.5.1.0.0.analysis.summary_series.global.annual.csv")
 #https://www.metoffice.gov.uk/hadobs/hadcrut5/data/HadCRUT.5.0.2.0/download.html
 
-tmp = data[1:175,2]
+tmp = data[1:176,2]
 
-Tanom_annual_df[,1] = 1850:2024
+Tanom_annual_df[,1] = 1850:2025
 Tanom_annual_df[,3] = tmp
 
 #NASA
-data = read.table("./data/raw/GMST_NASA_1850_2024.txt")
-#https://data.giss.nasa.gov/gistemp/graphs/graph_data/Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt
-Tanom_annual_df[31:175,2] = data[,2]
+data = read.table("./data/raw/GMST_NASA_1850_2025.txt",header=T)
+#https://data.giss.nasa.gov/gistemp/tabledata_v4/GLB.Ts+dSST.txt
+Tanom_annual_df[31:176,2] = data$J.D/100
 
 #NOAA
-data=read.table("./data/raw/aravg.ann.land_ocean.90S.90N.v6.0.0.202507.asc")
-#https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/
-Tanom_annual_df[,4] = data[1:175,2]
+data=read.table("./data/raw/aravg.ann.land_ocean.90S.90N.v6.1.0.202603.asc")
+#https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6.1/access/timeseries/aravg.ann.land_ocean.90S.90N.v6.1.0.202603.asc
+Tanom_annual_df[,4] = data[1:176,2]
 
 #Berkeley
-data=read.table("./data/raw/GMST_Berk_1850_2024.txt")
-#https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Land_and_Ocean_summary.txt
-Tanom_annual_df[,5] = data[1:175,2]
+data=read.table("./data/raw/GMST_Berk_1850_2025.txt")
+#https://storage.googleapis.com/berkeley-earth-temperature-hr/global/Global_TAVG_annual.txt
+Tanom_annual_df[,5] = data[1:176,2]
 
 #DCENT
-data = read.table("./data/raw/GMST_DCENT_1850_2024.txt",sep=",")
-#https://duochanatharvard.github.io/research_01_DCENT.html
-Tanom_annual_df[,6] = data[1:175,2]
+data = read.table("./data/raw/DCENT_DCENT_I_GMST_1850_2025.txt",sep=",",header=T)
+#https://dcent-i.github.io/
+Tanom_annual_df[,6] = data[1:176,2]
 
 Tanom_annual_df = as.data.frame(Tanom_annual_df)
 names(Tanom_annual_df) = c("year","NASA","HadCRUT","NOAA","Berkeley","DCENT")
 
-save(file="./data/processed/temperature_anomalies_1850_2024_global.RData",Tanom_annual_df)
+save(file="./data/processed/temperature_anomalies_1850_2025_global.RData",Tanom_annual_df)

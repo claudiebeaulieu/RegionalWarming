@@ -10,8 +10,8 @@
 
 
 # load datasets
-load('./data/processed/temperature_anomalies_1850_2024_global.RData')
-# Tanom_annual_df is a data frame with GMST from 1850-2026 from five different sources
+load('./data/processed/temperature_anomalies_1850_2025_global.RData')
+# Tanom_annual_df is a data frame with GMST from 1850-2025 from five different sources
 
 # Compute anomalies wrt to 1850-1900
 n = dim(Tanom_annual_df)[1]
@@ -19,7 +19,7 @@ nvar = dim(Tanom_annual_df)[2]
 m50 = colMeans(Tanom_annual_df[1:51,2:nvar],na.rm=T)
 Tanom_annual_df[,2:nvar] = Tanom_annual_df[,2:nvar]-matrix(rep(m50,n),nrow=n,ncol=nvar-1,byrow=T)
 
-##### Continuous model AR(1) fitted to full dataset until 2024
+##### Continuous model AR(1) fitted to full dataset until 2025
 
 trendarjoin=list()
 mresiduals=list()
@@ -43,6 +43,6 @@ for(i in 2:nvar){
   trendarjoin[[i]]=data[trendarjoin[[i]],1]  # put cpts in terms of year
   mresiduals[[i]] = data[,2]-fittrendAR$fit  # get residuals
 }
-save(Tanom_annual_df,trendarjoin,mresiduals,fits,fitsAR,dates,file="./results/results_trendar1join_global.Rdata")
+save(Tanom_annual_df,trendarjoin,mresiduals,fits,fitsAR,dates,file="./results/results_trendar1join_global_1850_2025.Rdata")
 
 # NOTE: we get same results if we reduce the penalty to 3*log(n)
