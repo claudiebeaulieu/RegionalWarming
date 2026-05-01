@@ -523,7 +523,7 @@ ensemble_plots = function(results, lon, lat, dataname) {
     
     plt_prob = ggplot() +
       geom_tile(data = cpt_list, aes(x = x, y = y, fill = layer)) +
-      scale_fill_gradient(name = "Agreement (%)",low = "white", high = "darkblue", limits = all_vals, na.value = "white")+
+      scale_fill_gradient(name = "Agreement (%)",low = "white", high = "navy", limits = all_vals, na.value = "white")+
       landmass +
       labs(title = dataname, x = "Longitude", y = "Latitude") +
       coord_fixed(ratio = 1, xlim = longcutoff, ylim = latcutoff, expand = FALSE)+
@@ -540,13 +540,14 @@ ensemble_plots = function(results, lon, lat, dataname) {
     
     plt_unc = ggplot() +
       geom_tile(data = cpt_list, aes(x = x, y = y, fill = layer)) +
+      #scale_fill_viridis_c(na.value = "white", name = "IQR", limits = all_vals) +
       scale_fill_stepsn(
         colours = RColorBrewer::brewer.pal(7, "YlOrRd"),
         breaks  = c(0, 2, 5, 10, 15, 20, 30, 35),
         limits  = c(0, 35),
         na.value = "white",
         name    = "Timing\nuncertainty\n(IQR, years)",
-        guide   = guide_colorsteps(show.limits = TRUE)) + 
+        guide   = guide_colorsteps(show.limits = TRUE)) +
       landmass +
       labs(title = dataname, x = "Longitude", y = "Latitude") +
       coord_fixed(ratio = 1, xlim = longcutoff, ylim = latcutoff, expand = FALSE)+

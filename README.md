@@ -65,7 +65,7 @@ Raw monthly gridded surface temperature files are not included in this repositor
 - [Berkeley,  https://berkeleyearth.org/data/]
 - [NOAA, https://psl.noaa.gov/data/gridded/data.noaaglobaltemp.html]
 - [NASA, https://data.giss.nasa.gov/gistemp/]
-- [HadCRUT, https://www.metoffice.gov.uk/hadobs/hadcrut5/data/HadCRUT.5.0.2.0/download.html]
+- [HadCRUT, https://www.metoffice.gov.uk/hadobs/hadcrut5/data/HadCRUT.5.1.0.0/download.html]
 - [DCENT-I, https://dcent-i.github.io/]
 
 Place raw data files in the `/data/raw` folder before running the scripts. Global mean surface temperature time series should also be placed there.

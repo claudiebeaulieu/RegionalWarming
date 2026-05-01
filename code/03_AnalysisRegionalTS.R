@@ -6,14 +6,11 @@
 
 ################################################################################
 # This script is used to create and analyze regional surface temperature time series as 
-# illustrated in Figure 4.
+# illustrated in Figure 4 and presented in Table 2.
 
 # load data
 load('./data/processed/annual_Berkeley_anom.RData')
 # Gridded Berkeley data
-
-#load cpanalysis results Berkeley
-load(file='./results/ResultsBerkeley.RData')
 
 #Define coordinates of time series to compute averages
 box_coords = matrix(c(-100, -90, 16, 21, 
@@ -50,25 +47,43 @@ for (i in 1:nregion){
   box_ts[[i]] = mbox
 }
 
+#save as a data frame
+regional_averages = data.frame(year,box_ts[[1]], box_ts[[2]],box_ts[[3]],box_ts[[4]],box_ts[[5]],
+                                box_ts[[6]],box_ts[[7]],box_ts[[10]])
+ names(regional_averages)= c("Year","Southeast Mexico","Gulf of Mexico","Bolivia", "East Greenland",
+                             "East Mediterranean","Southeast China","New Zealand","North Pacific")
+ save(file="./data/processed/RegionalAverages.RData",regional_averages,year,box_ts)
 
-box_cpt=list()
-box_energy=list()
 
 #repeat cp analysis in those regions
+ box_cpt=list()
+ box_energy=list()
+ box_fits=list()
+
 for (i in 1:nregion){
   mbox = box_ts[[i]]
   #run cp analysis
   cpt.trendARpJOIN = PELT.trendARpJOIN(mbox,p=1,pen=4*log(n),minseglen=10)
-  fittrend = fit.trendARpJOIN(data=mbox,cpts=cpt.trendARpJOIN,p=1,dates=year,add.ar=F)
-  fittrendAR = fit.trendARpJOIN(data=mbox,cpts=cpt.trendARpJOIN,p=1,dates=year,add.ar=T)
+  fittrend = fit.trendARpJOIN(data=mbox,cpts=cpt.trendARpJOIN-1,p=1,dates=year,add.ar=F)
+  fittrendAR = fit.trendARpJOIN(data=mbox,cpts=cpt.trendARpJOIN-1,p=1,dates=year,add.ar=T)
   cpt.difficulty = cpt_difficulty(mbox,cpt.trendARpJOIN, fittrend$coeffs)
   difficulty = cpt.difficulty[length(cpt.difficulty)]
   #create a data frame
-  mbox_df = as.data.frame(cbind(year,mbox,fittrend$fit,fittrendAR$fit))
+  mbox_fits = as.data.frame(unname(cbind(year,mbox,fittrend$fit,fittrendAR$fit)))
   #store results in a list
-  box_ts[[i]] = mbox_df#this is a list of data frames with obs + models
+  box_fits[[i]] = mbox_fits#this is a list of data frames with obs + models
   box_cpt[[i]]=year[cpt.trendARpJOIN]#year of cpt
   box_energy[[i]]=difficulty
 }
+save(file='./results/ResultsRegionalAverages.RData',box_fits,box_cpt,box_energy,box_names,box_coords)
 
-save(file='./results/ResultsRegionalAverages.RData',box_ts,box_cpt,box_energy,box_names,box_coords)
+
+# Calculate CI conditional on one changepoint for the regional averages
+
+# Load in the regional averages for the boxes
+load("./data/processed/RegionalAverages.RData")
+# regional_averages is a 55x9 matrix for the 8 regions (first col is dates)
+
+CI = ConfidenceIntervals(regional_averages)
+save(file='./results/CIRegionalAverages.RData',CI)
+
