@@ -150,7 +150,7 @@ save(file="./results/ResultsDCENTSummary.RData",ensemble_results)
 
 ## Analyze HadCRUT ensemble members ####
 year = seq(1970,2024)
-for(i in 1:200){
+for(i in 91:200){
   filepath = paste0("./data/processed/annual_HadCRUT.5.1.0.0_member_", i, "_anom.RData")
   load(filepath)
   data = tas_annual[,,which(time == 1970):which(time == 2024)]

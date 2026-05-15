@@ -139,7 +139,6 @@ latland_p1 = latitudinal_plots(lat,ncpts,dift,ycpts,3) +
 lat_landoce = ggarrange(latland_p1,latoce_p1,nrow=1,ncol=2,labels=c("A","B"),align="v",common.legend = TRUE, legend = "bottom")
 ggsave(file='./figures/latitudes_landoce_Berkeley.png',lat_landoce,bg = "white",width=8, height=4) 
 
-
 ## Plots regional average time series #####
 
 # With Berkeley dataset - Figure 3 in the Main
@@ -176,11 +175,12 @@ ind_region = c(seq(1:7),10)
 for (i in 1:length(ind_region)){
   tmp = box_fits[[ind_region[i]]]
   limits = CI[[i]]
-  p = ggplot(data=tmp,aes(x=V1,y=V2))+geom_line()+
+  p = ggplot(data=tmp,aes(x=V1,y=V2))+
     annotate("rect",
              xmin = min(limits), xmax = max(limits),
              ymin = -Inf, ymax = Inf,
              fill = "grey70", alpha = 0.4) +
+    geom_line()+
     geom_line(data=tmp,aes(x=V1,y=V3),col="red")+
     labs(title = box_names[ind_region[i]], x = "Year",y = "Anomaly (°C)")+
     scale_y_continuous(labels = function(x) sprintf("%.1f", x))+
