@@ -74,6 +74,11 @@ mag_3pen = mag_plots(results,lon,lat,"Berkeley")
 figs2 = ggarrange(timing_3pen+labs(title=""),mag_3pen+labs(title=""),nrow=2,ncol=1,labels=c("A","B"),align="v")
 ggsave('./figures/trendcpt_Berkeley_3Pen.png', figs2, bg = "white",width=8, height=8) 
 
+# tmp = ggarrange(mag_p6+labs(title=""),nrow=1,ncol=1,legend="top")
+# ggsave('./figures/trendcpt_mag_agg.png', tmp, bg = "white",width=8, height=4) 
+# 
+# tmp = ggarrange(timing_p6+labs(title=""),nrow=1,ncol=1,legend="top")
+# ggsave('./figures/trendcpt_agg.png', tmp, bg = "white",width=8, height=4) 
 
 ## Plots cp SNR #####
 

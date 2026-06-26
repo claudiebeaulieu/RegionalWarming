@@ -54,6 +54,32 @@ save(file='./results/ResultsBerkeley_3Pen.RData',results)
 results = st.quad(data,lon,lat,year) #quadratic trend
 save(file='./results/ResultsquadBerkeley.RData',results)
 
+#Compute grid cell level confidence intervals
+# Load in the grid cell data
+load("./data/processed/annual_Berkeley_anom.RData")
+load("./results/ResultsBerkeley.RData")
+
+year = seq(1970,2024)
+data = tas_annual[,,which(time == 1970):which(time == 2024)]
+
+#initialize results
+CIs = array(data=NA,c(length(lon),length(lat),2))
+
+# loop through longitude and latitude
+for(i in 1:length(lon)){
+  print(i)
+  for(j in 1:length(lat)){
+    print(j)
+    tmp = data[i,j,]#extract anomaly at a given grid cell
+    if(results$NAs[i,j] == 1 && results$ncpts[i,j] == 1){#only analyze grid cells with one change
+      interval = ConfidenceIntervalsTS(tmp,year)
+      CIs[i,j,1]=interval[1]
+      CIs[i,j,2]=interval[length(interval)]
+    }
+  }
+}
+save(file='./results/ResultsCIBerkeley.RData',CIs)
+
 ## Analyze DCENT dataset #####
 
 load('./data/processed/annual_DCENT_anom.RData')
