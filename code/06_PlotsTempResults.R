@@ -84,6 +84,13 @@ diff_p1 = difficulty_plots(results,lon,lat,"Berkeley") + labs(title=" ")
 ggsave('./figures/difficulty_Berkeley.png', diff_p1, bg = "white",width=8, height=4) 
 
 
+## Plot changepoint confidence interval #####
+
+load('./results/ResultsCIBerkeley.RData')
+CI_p1 = CI_plots(CIs,lon,lat)
+ggsave(file='./figures/CIlength_Berkeley.png',CI_p1,bg = "white",width=8, height=4) 
+
+
 ## PLots quadratic trends #####
 
 #Berkeley dataset Figure S7 Supp

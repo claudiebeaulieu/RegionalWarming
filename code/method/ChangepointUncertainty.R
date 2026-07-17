@@ -125,7 +125,6 @@ ConfidenceIntervals = function(regional_averages) {
     beta = coef(trendfit)[1]
     crit_val = qnorm(1 - (1 - conf.level) / 2)
     
-    # CRITICAL FIX: Trend slope is the change (beta - previousbeta) divided by segment length
     ann_trend = (beta - previousbeta) / n
     
     return(list(

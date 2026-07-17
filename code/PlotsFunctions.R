@@ -207,7 +207,7 @@ mag_plots = function(results, lon, lat, dataname) {
 }
 
 
-mag_combined_plots <- function(results, lon, lat, dataname) {
+mag_combined_plots = function(results, lon, lat, dataname) {
   
   if (length(dim(results$dift)) == 2) {
     results$dift = array(results$dift, dim = c(dim(results$dift), 1))
@@ -332,10 +332,41 @@ difficulty_plots = function(results, lon, lat, dataname) {
                          guide = guide_legend(
                            override.aes = list(size = 2, stroke = 1, color = "black")))
   }
-  
   return(plt)
 }
 
+
+
+##############Confidence Interval Plot#############################
+
+CI_plots = function(CIs, lon, lat) {
+  
+  CIl = CIs[,,2] - CIs[,,1]
+  
+  CI_list = slice_to_df(CIl, lon, lat)
+  all_vals      = range(CI_list$layer,na.rm=T)
+  
+  plt = ggplot() +
+    geom_tile(data = CI_list, aes(x = x, y = y, fill = layer)) +
+    scale_fill_stepsn(
+      colours = RColorBrewer::brewer.pal(7, "YlOrRd"),
+      breaks  = c(0, 5, 10, 15, 20, 25, 30, 35),
+      limits  = c(0, 35),
+      na.value = "white",
+      name    = "CI length(years)",
+      guide   = guide_colorsteps(show.limits = TRUE)) +
+    landmass +
+    labs(x = "Longitude", y = "Latitude") +
+    coord_fixed(ratio = 1, xlim = longcutoff, ylim = latcutoff, expand = FALSE)+
+    theme_bw() +
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "cm"),
+          legend.position = "right")
+  
+  return(plt)
+}
 
 ##############Quadratic Plot#############################
 quadtrend_plots = function(results,lon,lat,dataname){

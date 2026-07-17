@@ -59,8 +59,8 @@ for(i in 1:length(lon)){
     tmp = data[i,j,]#extract anomaly at a given grid cell
     if(results$NAs[i,j] == 1 && results$ncpts[i,j] == 1){#only analyze grid cells with one change
       interval = ConfidenceIntervalsTS(tmp,year)
-      CIs[i,j,1]=interval[1]
-      CIs[i,j,2]=interval[length(interval)]
+      CIs[i,j,1]=interval[[2]][1]
+      CIs[i,j,2]=interval[[2]][length(interval[[2]])]
     }
   }
 }
