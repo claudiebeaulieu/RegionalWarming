@@ -48,21 +48,7 @@ data = tas_annual[,,which(time == 1970):which(time == 2024)]#we extract the data
 results = st.cpts(data,lon,lat,year,"BIC")
 save(file='./results/ResultsBerkeley.RData',results)
 
-results = st.cpts(data,lon,lat,year,3*log(length(year))) #reduced penalty
-save(file='./results/ResultsBerkeley_3Pen.RData',results)
-
-results = st.quad(data,lon,lat,year) #quadratic trend
-save(file='./results/ResultsquadBerkeley.RData',results)
-
-#Compute grid cell level confidence intervals
-# Load in the grid cell data
-load("./data/processed/annual_Berkeley_anom.RData")
-load("./results/ResultsBerkeley.RData")
-
-year = seq(1970,2024)
-data = tas_annual[,,which(time == 1970):which(time == 2024)]
-
-#initialize results
+# Compute grid cell level confidence intervals
 CIs = array(data=NA,c(length(lon),length(lat),2))
 
 # loop through longitude and latitude
@@ -79,6 +65,12 @@ for(i in 1:length(lon)){
   }
 }
 save(file='./results/ResultsCIBerkeley.RData',CIs)
+
+results = st.cpts(data,lon,lat,year,3*log(length(year))) #reduced penalty
+save(file='./results/ResultsBerkeley_3Pen.RData',results)
+
+results = st.quad(data,lon,lat,year) #quadratic trend
+save(file='./results/ResultsquadBerkeley.RData',results)
 
 ## Analyze DCENT dataset #####
 

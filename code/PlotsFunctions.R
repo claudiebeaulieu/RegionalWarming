@@ -301,9 +301,9 @@ difficulty_plots = function(results, lon, lat, dataname) {
   plt = ggplot() +
     geom_tile(data = snr_list[[1]], aes(x = x, y = y, fill = layer)) +
     landmass +
-    scale_fill_gradientn(name = "SNR", colors = c("#FFFFCC", "#FD8D3C", "#800026"),
+    scale_fill_gradientn(name = "E", colors = c("#FFFFCC", "#FD8D3C", "#800026"),
                          trans = "log1p", limits = c(0, 5), na.value = "white") +
-    scale_color_gradientn(name = "SNR", colors = c("#FFFFCC", "#FD8D3C", "#800026"),
+    scale_color_gradientn(name = "E", colors = c("#FFFFCC", "#FD8D3C", "#800026"),
                           trans = "log1p", limits = c(0, 5),
                           na.value = "white", guide = "none") +
     geom_tile(data = subset(NA_df, is.na(layer)),

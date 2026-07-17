@@ -5,7 +5,7 @@
 # warming acceleration since 1970.
 
 ################################################################################
-# The script is used to plot simulation results - Figure S3 in Supp.
+# The script is used to plot simulation results - Figure S6 in Supp.
 
 
 timings = c(1980,1990,2000,2010)
@@ -27,7 +27,7 @@ p = ggplot(datalong,aes(x=energy, y=power, colour=timing))
 
 p1 = p + geom_line(linewidth=1) +
   scale_color_viridis_d() + 
-  labs(x="SNR",y="Power",color="Timing") +
+  labs(x="E",y="Power",color="Timing") +
   scale_x_continuous(expand=c(0,0),limits=c(0,3)) +
   scale_y_continuous(expand=c(0,0),limits=c(0,1.05)) +
   theme_linedraw() 
@@ -47,11 +47,12 @@ p = ggplot(datalong,aes(x=energy, y=power, colour=timing))
 
 p2 = p + geom_line(linewidth=1) +
   scale_color_viridis_d() + 
-  labs(x="SNR",y="Power",color="Timing") +
+  labs(x="E",y="Power",color="Timing") +
   scale_x_continuous(expand=c(0,0),limits=c(0,3)) +
   scale_y_continuous(expand=c(0,0),limits=c(0,1.05)) +
   theme_linedraw() 
 
-pdf(file='./figures/sims_power.pdf',width=8, height=4)
-ggarrange(p1,p2,nrow=1,ncol=2,labels=c("A","B"),align="v",common.legend = TRUE, legend = "bottom")
-dev.off()
+# Figure S6
+figs6=ggarrange(p1,p2,nrow=1,ncol=2,labels=c("A","B"),align="v",common.legend = TRUE, legend = "bottom")
+ggsave('./figures/sims_power.png', figs6, bg = "white",width=8, height=4) 
+

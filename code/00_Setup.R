@@ -25,7 +25,6 @@ library(ggnewscale)
 
 
 # load functions #####
-
 source('./code/ImportncData.R')
 source('./code/RegridData.R')
 source('./code/method/PELTtrendARpJOIN.R')

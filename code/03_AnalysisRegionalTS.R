@@ -64,8 +64,8 @@ for (i in 1:nregion){
   mbox = box_ts[[i]]
   #run cp analysis
   cpt.trendARpJOIN = PELT.trendARpJOIN(mbox,p=1,pen=4*log(n),minseglen=10)
-  fittrend = fit.trendARpJOIN(data=mbox,cpts=cpt.trendARpJOIN-1,p=1,dates=year,add.ar=F)
-  fittrendAR = fit.trendARpJOIN(data=mbox,cpts=cpt.trendARpJOIN-1,p=1,dates=year,add.ar=T)
+  fittrend = fit.trendARpJOIN(data=mbox,cpts=cpt.trendARpJOIN,p=1,dates=year,add.ar=F)
+  fittrendAR = fit.trendARpJOIN(data=mbox,cpts=cpt.trendARpJOIN,p=1,dates=year,add.ar=T)
   cpt.difficulty = cpt_difficulty(mbox,cpt.trendARpJOIN, fittrend$coeffs)
   difficulty = cpt.difficulty[length(cpt.difficulty)]
   #create a data frame

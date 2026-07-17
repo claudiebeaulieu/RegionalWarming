@@ -65,22 +65,17 @@ ggsave('./figures/trendcpt_all.png', fig1, bg = "white",width=8, height=10)
 fig2 = ggarrange(mag_p6,mag_p3,mag_p4,mag_p5,mag_p2r,mag_p1r,mag_p2,mag_p1,nrow=4,ncol=2,labels=c("A","B","C","D","E","F","G","H"),align="v",common.legend = TRUE, legend = "top")
 ggsave('./figures/trendmag_all.png', fig2, bg = "white",width=8, height=10) 
 
-#Plot the timing and magnitude for Berkeley with reduced penalty - Figure S4 Supp
+#Plot the timing and magnitude for Berkeley with reduced penalty - Figure S5 Supp
 load('./data/processed/annual_Berkeley_anom.RData')
 load(file='./results/ResultsBerkeley_3Pen.RData')
 timing_3pen = timing_plots(results,lon,lat,"Berkeley")
 mag_3pen = mag_plots(results,lon,lat,"Berkeley")
 
-figs2 = ggarrange(timing_3pen+labs(title=""),mag_3pen+labs(title=""),nrow=2,ncol=1,labels=c("A","B"),align="v")
-ggsave('./figures/trendcpt_Berkeley_3Pen.png', figs2, bg = "white",width=8, height=8) 
+figs5 = ggarrange(timing_3pen+labs(title=""),mag_3pen+labs(title=""),nrow=2,ncol=1,labels=c("A","B"),align="v")
+ggsave('./figures/trendcpt_Berkeley_3Pen.png', figs5, bg = "white",width=8, height=8) 
 
-# tmp = ggarrange(mag_p6+labs(title=""),nrow=1,ncol=1,legend="top")
-# ggsave('./figures/trendcpt_mag_agg.png', tmp, bg = "white",width=8, height=4) 
-# 
-# tmp = ggarrange(timing_p6+labs(title=""),nrow=1,ncol=1,legend="top")
-# ggsave('./figures/trendcpt_agg.png', tmp, bg = "white",width=8, height=4) 
 
-## Plots cp SNR #####
+## Plots cp energy #####
 
 #Berkeley dataset Figure 5 Main paper
 load('./data/processed/annual_Berkeley_anom.RData')
@@ -91,7 +86,7 @@ ggsave('./figures/difficulty_Berkeley.png', diff_p1, bg = "white",width=8, heigh
 
 ## PLots quadratic trends #####
 
-#Berkeley dataset Figure S6 Supp
+#Berkeley dataset Figure S7 Supp
 load('./data/processed/annual_Berkeley_anom.RData')
 load(file='./results/ResultsquadBerkeley.RData')
 quad_p1 = quadtrend_plots(results,lon,lat,"Berkeley") + labs(title=" ")
@@ -100,7 +95,7 @@ ggsave('./figures/quadtrends_Berkeley.png', quad_p1, bg = "white",width=8, heigh
 
 ## Plots of changepoints per latitude #####
 
-# Berkeley latitudinal changepoints - Land and ocean separated
+# Berkeley latitudinal changepoints - Land and ocean separated, Figure 3 Main
 load('./data/processed/annual_Berkeley_anom.RData')
 load('./data/processed/Berkeley_landmask.RData')#1 is land and 0 is ocean
 load('./results/ResultsBerkeley.RData')
@@ -144,9 +139,10 @@ latland_p1 = latitudinal_plots(lat,ncpts,dift,ycpts,3) +
 lat_landoce = ggarrange(latland_p1,latoce_p1,nrow=1,ncol=2,labels=c("A","B"),align="v",common.legend = TRUE, legend = "bottom")
 ggsave(file='./figures/latitudes_landoce_Berkeley.png',lat_landoce,bg = "white",width=8, height=4) 
 
+
 ## Plots regional average time series #####
 
-# With Berkeley dataset - Figure 3 in the Main
+# With Berkeley dataset - Figure 4 in the Main
 
 # load regional averages time series and analysis results - Berkeley
 load('./results/ResultsRegionalAverages.RData')
@@ -157,7 +153,6 @@ timing_p1_boxes = timing_p1 +
   geom_rect(aes(xmin=box_coords[1,1],xmax=box_coords[1,2],ymin=box_coords[1,3],ymax=box_coords[1,4]),color="firebrick",alpha=0,linewidth=1)+#Mexico
   geom_rect(aes(xmin=box_coords[2,1],xmax=box_coords[2,2],ymin=box_coords[2,3],ymax=box_coords[2,4]),color="firebrick",alpha=0,linewidth=1)+#Gulf of Mexico
   geom_rect(aes(xmin=box_coords[3,1],xmax=box_coords[3,2],ymin=box_coords[3,3],ymax=box_coords[3,4]),color="firebrick",alpha=0,linewidth=1)+#Bolivia
-  #geom_rect(aes(xmin=box_coords[4,1],xmax=box_coords[4,2],ymin=box_coords[4,3],ymax=box_coords[4,4]),color="firebrick",alpha=0,linewidth=1)+#Eastern Greenland
   geom_rect(aes(xmin=box_coords[5,1],xmax=box_coords[5,2],ymin=box_coords[5,3],ymax=box_coords[5,4]),color="firebrick",alpha=0,linewidth=1)+#Eastern mediterranean
   geom_rect(aes(xmin=box_coords[6,1],xmax=box_coords[6,2],ymin=box_coords[6,3],ymax=box_coords[6,4]),color="firebrick",alpha=0,linewidth=1)+#Southeast China 
   geom_rect(aes(xmin=box_coords[7,1],xmax=box_coords[7,2],ymin=box_coords[7,3],ymax=box_coords[7,4]),color="firebrick",alpha=0,linewidth=1)+#SNew Zealand
@@ -166,7 +161,6 @@ timing_p1_boxes = timing_p1 +
   geom_text(aes(x=-108,y=20),label="B",color="firebrick")+
   geom_text(aes(x=-70,y=30),label="C",color="firebrick")+
   geom_text(aes(x=-48,y=-10),label="D",color="firebrick")+
-  #geom_text(aes(x=-38,y=72),label="E",color="firebrick")+
   geom_text(aes(x=45,y=26),label="E",color="firebrick")+
   geom_text(aes(x=93,y=36),label="F",color="firebrick")+
   geom_text(aes(x=160,y=-25),label="G",color="firebrick")+
@@ -178,25 +172,39 @@ timing_p1_boxes = timing_p1 +
 box_p = list()
 ind_region = c(seq(1:7),10)
 for (i in 1:length(ind_region)){
-  tmp = box_fits[[ind_region[i]]]
-  limits = CI[[i]]
-  p = ggplot(data=tmp,aes(x=V1,y=V2))+
-    annotate("rect",
-             xmin = min(limits), xmax = max(limits),
-             ymin = -Inf, ymax = Inf,
-             fill = "grey70", alpha = 0.4) +
-    geom_line()+
-    geom_line(data=tmp,aes(x=V1,y=V3),col="red")+
-    labs(title = box_names[ind_region[i]], x = "Year",y = "Anomaly (°C)")+
-    scale_y_continuous(labels = function(x) sprintf("%.1f", x))+
-    theme_bw()+
-    theme(axis.text.x = element_text(angle = 45,hjust=1),
+  tmp = box_fits[[ind_region[i]]] 
+  region_name = box_names[ind_region[i]]
+  
+  # Retrieve the raw CI years
+  raw_limits = CI[[region_name]]$Changepoint_CI_Years
+  
+  # Shift by +1 year so the shaded box aligns with the physical bend (tau + 1)
+  limits = raw_limits + 1
+  
+  p = ggplot(data=tmp, aes(x=V1, y=V2))
+  
+  # Draw the shaded Changepoint CI
+  if (length(limits) > 0 && !any(is.na(limits))) {
+    p = p + annotate("rect",
+                     xmin = min(limits), xmax = max(limits),
+                     ymin = -Inf, ymax = Inf,
+                     fill = "grey70", alpha = 0.4)
+  }
+  
+  # Plot raw observations and the main red trend line
+  p = p + 
+    geom_line() + 
+    geom_line(data=tmp, aes(x=V1, y=V3), col="red", size=0.8) + 
+    labs(title = region_name, x = "Year", y = "Anomaly (°C)") +
+    scale_y_continuous(labels = function(x) sprintf("%.1f", x)) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, hjust=1),
           panel.grid = element_blank(),
           plot.title = element_text(size = 10),
           axis.title = element_text(size = 8),
           axis.text = element_text(size = 8))
-  box_p[[i]]=p
-  print(limits)
+  
+  box_p[[i]] = p
 }
 
 fig4 = ggarrange(timing_p1_boxes,                                                 # First row with map
